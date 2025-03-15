@@ -1,0 +1,82 @@
+<div
+  class="bg-light dark:bg-transparent min-vh-100 d-flex flex-row align-items-center"
+>
+  <c-container breakpoint="md">
+    <c-row class="justify-content-center">
+      <c-col lg="6" xl="6">
+        <c-card-group>
+          <c-card class="p-4">
+            <c-card-body>
+              <form (ngSubmit)="login()">
+                <h1>Login</h1>
+                <p class="text-body-secondary">Sign In to your account</p>
+
+                <!-- Username Field -->
+                <c-input-group
+                  class="mb-3"
+                  [ngClass]="{ 'is-invalid-group': loginNameModel.invalid && loginNameModel.touched }"
+                >
+                  <span cInputGroupText>
+                    <svg cIcon name="cilUser"></svg>
+                  </span>
+                  <input
+                    autoComplete="loginName"
+                    cFormControl
+                    placeholder="Username"
+                    [(ngModel)]="loginName"
+                    name="loginName"
+                    required
+                    #loginNameModel="ngModel"
+                  />
+                </c-input-group>
+                <c-input-group class="mb-4" [ngClass]="{ 'is-invalid-group': passwordModel.invalid && passwordModel.touched }">
+                  <span cInputGroupText>
+                    <svg cIcon name="cilLockLocked"></svg>
+                  </span>
+                  <input
+                    autoComplete="current-password"
+                    cFormControl
+                    placeholder="Password"
+                    type="password"
+                    [(ngModel)]="password"
+                    name="password"
+                    required
+                    #passwordModel="ngModel"
+                  />
+                </c-input-group>
+                <div
+                  *ngIf="errorMessage && !loginNameError && !passwordError"
+                  class="text-danger mt-2"
+                >
+                  {{ errorMessage }}
+                </div>
+
+                <c-row>
+                  <c-col xs="6">
+                    <button
+                      cButton
+                      class="px-4"
+                      color="primary"
+                      type="submit"
+                      [disabled]="isLoading"
+                    >
+                      <span *ngIf="!isLoading">Login</span>
+                      <span *ngIf="isLoading">
+                        <i
+                          class="spinner-border spinner-border-sm"
+                          role="status"
+                          aria-hidden="true"
+                        ></i>
+                        Login
+                      </span>
+                    </button>
+                  </c-col>
+                </c-row>
+              </form>
+            </c-card-body>
+          </c-card>
+        </c-card-group>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>

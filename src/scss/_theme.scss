@@ -1,0 +1,175 @@
+body {
+  background-color: var(--cui-tertiary-bg);
+}
+
+.wrapper {
+  width: 100%;
+  @include ltr-rtl("padding-left", var(--cui-sidebar-occupy-start, 0));
+  @include ltr-rtl("padding-right", var(--cui-sidebar-occupy-end, 0));
+  will-change: auto;
+  @include transition(padding .15s);
+}
+
+
+// .header > .container-fluid,
+// .sidebar-header {
+//   min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
+// }
+
+.sidebar-brand-full {
+  margin-left: 3px;
+}
+
+.sidebar-header {
+  .nav-underline-border {
+    --cui-nav-underline-border-link-padding-x: 1rem;
+    --cui-nav-underline-border-gap: 0;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
+  }
+}
+
+.sidebar-toggler {
+  @include ltr-rtl("margin-left", auto);
+}
+
+.sidebar-narrow,
+.sidebar-narrow-unfoldable:not(:hover) {
+  .sidebar-toggler {
+    @include ltr-rtl("margin-right", auto);
+  }
+}
+
+.header > .container-fluid + .container-fluid {
+  min-height: 3rem;
+}
+
+.footer {
+  min-height: calc(3rem + 1px); // stylelint-disable-line function-disallowed-list
+}
+
+.container {
+  padding: 20px; /* Adds padding around the form */
+  background-color: #f9f9f9; /* Light background for the form container */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow around the container */
+}
+
+
+// tab
+.theme-dependent {
+  background-color: var(--cui-tertiary-bg);
+  color: var(--text-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.theme-dependent .dx-datagrid-headers {
+  background-color: var(--cui-tertiary-bg);
+  color: var(--text-color);
+}
+
+.theme-dependent .dx-datagrid-rowsview {
+  background-color: var(--cui-tertiary-bg);
+  color: var(--text-color);
+}
+
+.theme-dependent .dx-texteditor-input {
+  background-color: var(--cui-tertiary-bg);
+  color: var(--text-color);
+}
+
+.filled-tabs {
+  background-color: var(--cui-tertiary-bg);
+  color: var(--text-color);
+  border-radius: 8px;
+  padding: 5px;
+}
+
+/* Style the selected tab */
+.filled-tabs .dx-tab.dx-tab-selected {
+  background-color: var(--cui-primary-bg);
+  color: var(--text-color);
+  // font-weight: bold;
+  border-radius: 6px;
+}
+
+/* Style the non-selected tabs */
+.filled-tabs .dx-tab {
+  background-color: var(--cui-tertiary-bg);
+  color: var(--text-color);
+  border-radius: 6px;
+}
+
+/* Hover effect */
+.filled-tabs .dx-tab:hover {
+  background-color: var(--cui-hover-bg);
+}
+
+
+:root {
+--text-color:black;
+}
+
+
+@if $enable-dark-mode {
+  @include color-mode(dark) {
+    body {
+      background-color: var(--cui-dark-bg-subtle);
+    }
+
+    .footer {
+      --cui-footer-bg: var(--cui-body-bg);
+    }
+    .container {
+      background-color: rgba(0, 0, 0, 0.2); /* Dark background for container in dark mode */
+      color: #fff; /* Text color for better contrast in dark mode */
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Darker shadow for dark mode */
+    }
+
+    --text-color:white;
+
+    .theme-dependent {
+      background-color: var(--cui-dark-bg-subtle);
+      color: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .theme-dependent .dx-datagrid-headers,
+    .theme-dependent .dx-datagrid-rowsview,
+    .theme-dependent .dx-texteditor-input {
+      background-color: var(--cui-dark-bg-subtle);
+      color: white;
+    
+  }
+
+  .filled-tabs {
+    background-color: var(--cui-dark-bg-subtle);
+    color: white;
+  }
+
+  .filled-tabs .dx-tab.dx-tab-selected {
+    background-color: var(--cui-dark-primary-bg);
+    color: white;
+  }
+
+  .filled-tabs .dx-tab {
+    background-color: var(--cui-dark-bg-subtle);
+    color: white;
+  }
+
+  .filled-tabs .dx-tab:hover {
+    background-color: var(--cui-dark-hover-bg);
+  }
+
+  .dx-datagrid .dx-datagrid-content .dx-datagrid-table .dx-row > td:not(.dx-validation-pending) {
+    vertical-align: middle;
+    padding: 7px;
+    background-color: inherit;
+}
+}
+}

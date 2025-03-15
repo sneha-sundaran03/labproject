@@ -1,0 +1,556 @@
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-3">
+      <c-card-header ngPreserveWhitespaces class="card-header-flex">
+        <strong>Collection</strong>
+        <div class="d-flex align-items-center">
+          <!-- Date From -->
+
+          <div class="row align-items-center">
+            <!-- Date From -->
+            <div
+              class="col-12 col-md-auto d-flex align-items-center mb-2 mb-md-0"
+            >
+              <label for="dateFrom" class="me-2">From:</label>
+              <input
+                type="date"
+                class="form-control"
+                id="dateFrom"
+                style="width: auto"
+                [(ngModel)]="dateFrom"
+              />
+            </div>
+
+            <!-- Date To -->
+            <div
+              class="col-12 col-md-auto d-flex align-items-center mb-2 mb-md-0"
+            >
+              <label for="dateTo" class="me-2">To:</label>
+              <input
+                type="date"
+                class="form-control"
+                id="dateTo"
+                style="width: auto"
+                [(ngModel)]="dateTo"
+              />
+            </div>
+
+            <!-- Apply Button -->
+            <div class="col-12 col-md-auto mb-2 mb-md-0">
+              <button
+                class="btn btn-secondary w-100 w-md-auto"
+                (click)="applyDateRange()"
+              >
+                Apply
+              </button>
+            </div>
+
+            <!-- Add Collection Button -->
+            <div class="col-12 col-md-auto">
+              <button
+                class="btn btn-primary w-100 w-md-auto"
+                data-toggle="modal"
+                data-target="#collectionModal"
+                title="Add a new collection"
+              >
+                <i class="bi bi-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </c-card-header>
+      <c-card-body>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Collection No</th>
+                <th>Date & Time</th>
+                <th>UHID</th>
+                <th>Patient Name</th>
+                <th>Reference No</th>
+                <th>Ward/Unit</th>
+                <th>Investigation</th>
+                <th>Referred By</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let log of collectionList">
+                <td>{{ log.COLLECTION_NO }}</td>
+                <td>{{ log.COLLECTION_DATE }}</td>
+                <td>{{ log.UHID }}</td>
+                <td>{{ log.PATIENT_NAME }}</td>
+                <td>{{ log.REFERENCE_NO }}</td>
+                <td>{{ log.WARD }}</td>
+                <td>{{ log.INVESTIGATION }}</td>
+                <td>{{ log.DOCTOR_NAME }}</td>
+                <td>{{ log.STATUS_NAME }}</td>
+                <td>
+                  <!-- Edit Button -->
+                  <button class="btn btn-sm">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <!-- Delete Button -->
+                  <button class="btn btn-sm">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>
+
+<div
+  class="modal fade"
+  id="collectionModal"
+  tabindex="-1"
+  aria-labelledby="collectionModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="collectionModalLabel">New Collection</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="onClose()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form [formGroup]="collectionForm">
+        <div
+          class="modal-body"
+          style="height: 75vh; max-height: 100vh; overflow-y: auto"
+        >
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="collectionNo"
+                  formControlName="collectionNo"
+                  placeholder="Enter Collection No"
+                  readonly
+                />
+                <label for="collectionNo">Collection No</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="patientName"
+                  formControlName="patientName"
+                  placeholder="Enter Patient Name"
+                />
+                <label for="patientName">Patient Name</label>
+                <div
+                  *ngIf="
+                    collectionForm.get('patientName')?.invalid &&
+                    (collectionForm.get('patientName')?.touched ||
+                      collectionForm.get('patientName')?.dirty)
+                  "
+                  class="text-danger"
+                  style="font-size: 13px"
+                >
+                  *This Field is required.
+                </div>
+              </div>
+
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="hospital"
+                  formControlName="hospital"
+                  placeholder="Enter Hospital"
+                />
+                <label for="hospital">Hospital</label>
+                <div
+                  *ngIf="
+                    collectionForm.get('hospital')?.invalid &&
+                    (collectionForm.get('hospital')?.touched ||
+                      collectionForm.get('hospital')?.dirty)
+                  "
+                  class="text-danger"
+                  style="font-size: 13px"
+                >
+                  *This Field is required.
+                </div>
+              </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="uhid"
+                  formControlName="uhid"
+                  placeholder="Enter UHID"
+                />
+                <label for="uhid">UHID</label>
+                <div
+                  *ngIf="
+                    collectionForm.get('uhid')?.invalid &&
+                    (collectionForm.get('uhid')?.touched ||
+                      collectionForm.get('uhid')?.dirty)
+                  "
+                  class="text-danger"
+                  style="font-size: 13px"
+                >
+                  *This Field is required.
+                </div>
+              </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="investigationReq"
+                  formControlName="investigationReq"
+                  placeholder="Enter Investigation Request"
+                />
+                <label for="investigationReq">Investigation Req.</label>
+                <div
+                  *ngIf="
+                    collectionForm.get('investigationReq')?.invalid &&
+                    (collectionForm.get('investigationReq')?.touched ||
+                      collectionForm.get('investigationReq')?.dirty)
+                  "
+                  class="text-danger"
+                  style="font-size: 13px"
+                >
+                  *This Field is required.
+                </div>
+              </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="natureSpecimen"
+                  formControlName="natureSpecimen"
+                  placeholder="Enter Nature of Specimen"
+                />
+                <label for="natureSpecimen">Nature of Specimen</label>
+                <div
+                  *ngIf="
+                    collectionForm.get('natureSpecimen')?.invalid &&
+                    (collectionForm.get('natureSpecimen')?.touched ||
+                      collectionForm.get('natureSpecimen')?.dirty)
+                  "
+                  class="text-danger"
+                  style="font-size: 13px"
+                >
+                  *This Field is required.
+                </div>
+              </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="referredByDr"
+                  formControlName="referredByDr"
+                  placeholder="Enter Referred by Dr."
+                />
+                <label for="referredByDr">Referred by Dr.</label>
+                <div
+                  *ngIf="
+                    collectionForm.get('referredByDr')?.invalid &&
+                    (collectionForm.get('referredByDr')?.touched ||
+                      collectionForm.get('referredByDr')?.dirty)
+                  "
+                  class="text-danger"
+                  style="font-size: 13px"
+                >
+                  *This Field is required.
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="referenceNo"
+                  formControlName="referenceNo"
+                  placeholder="Enter Reference No"
+                />
+                <label for="referenceNo">Reference No</label>
+                <div
+                  *ngIf="
+                    collectionForm.get('referenceNo')?.invalid &&
+                    (collectionForm.get('referenceNo')?.touched ||
+                      collectionForm.get('referenceNo')?.dirty)
+                  "
+                  class="text-danger"
+                  style="font-size: 13px"
+                >
+                  *This Field is required.
+                </div>
+              </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="datetime-local"
+                  class="form-control"
+                  id="time"
+                  formControlName="time"
+                />
+                <label for="time">Time</label>
+                <div
+                  *ngIf="
+                    collectionForm.get('time')?.invalid &&
+                    (collectionForm.get('time')?.touched ||
+                      collectionForm.get('time')?.dirty)
+                  "
+                  class="text-danger"
+                  style="font-size: 13px"
+                >
+                  *This Field is required.
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-6">
+                  <div class="form-floating">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="age"
+                      formControlName="age"
+                      placeholder="Enter Age"
+                    />
+                    <label for="age">Age</label>
+                    <div
+                      *ngIf="
+                        collectionForm.get('age')?.invalid &&
+                        (collectionForm.get('age')?.touched ||
+                          collectionForm.get('age')?.dirty)
+                      "
+                      class="text-danger"
+                      style="font-size: 13px"
+                    >
+                      *This Field is required.
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-floating">
+                    <select class="form-control" id="sex" formControlName="sex">
+                      <option>Male</option>
+                      <option>Female</option>
+                    </select>
+                    <label for="sex">Sex</label>
+                  </div>
+                  <div
+                    *ngIf="
+                      collectionForm.get('sex')?.invalid &&
+                      (collectionForm.get('sex')?.touched ||
+                        collectionForm.get('sex')?.dirty)
+                    "
+                    class="text-danger"
+                    style="font-size: 13px"
+                  >
+                    *This Field is required.
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="income"
+                  formControlName="income"
+                  placeholder="Enter Income"
+                />
+                <label for="income">Income</label>
+                <div
+                  *ngIf="
+                    collectionForm.get('income')?.invalid &&
+                    (collectionForm.get('income')?.touched ||
+                      collectionForm.get('income')?.dirty)
+                  "
+                  class="text-danger"
+                  style="font-size: 13px"
+                >
+                  *This Field is required.
+                </div>
+              </div>
+
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ward"
+                  formControlName="ward"
+                  placeholder="Enter Ward"
+                />
+                <label for="ward">Ward</label>
+                <div
+                  *ngIf="
+                    collectionForm.get('ward')?.invalid &&
+                    (collectionForm.get('ward')?.touched ||
+                      collectionForm.get('ward')?.dirty)
+                  "
+                  class="text-danger"
+                  style="font-size: 13px"
+                >
+                  *This Field is required.
+                </div>
+              </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="unit"
+                  formControlName="unit"
+                  placeholder="Enter Unit"
+                />
+                <label for="unit">Unit</label>
+                <div
+                  *ngIf="
+                    collectionForm.get('unit')?.invalid &&
+                    (collectionForm.get('unit')?.touched ||
+                      collectionForm.get('unit')?.dirty)
+                  "
+                  class="text-danger"
+                  style="font-size: 13px"
+                >
+                  *This Field is required.
+                </div>
+              </div>
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="mobile"
+                  formControlName="mobile"
+                  placeholder="Enter Mobile"
+                />
+                <label for="mobile">Mobile</label>
+                <div
+                  *ngIf="
+                    collectionForm.get('mobile')?.invalid &&
+                    (collectionForm.get('mobile')?.touched ||
+                      collectionForm.get('mobile')?.dirty)
+                  "
+                  class="text-danger"
+                  style="font-size: 13px"
+                >
+                  *This Field is required.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-floating mb-3">
+            <textarea
+              class="form-control"
+              id="clinicalData"
+              formControlName="clinicalData"
+              rows="3"
+              placeholder="Enter Clinical Data"
+            ></textarea>
+            <label for="clinicalData"
+              >Brief relevant Clinical and Laboratory data</label
+            >
+            <div
+              *ngIf="
+                collectionForm.get('clinicalData')?.invalid &&
+                (collectionForm.get('clinicalData')?.touched ||
+                  collectionForm.get('clinicalData')?.dirty)
+              "
+              class="text-danger"
+              style="font-size: 13px"
+            >
+              *This Field is required.
+            </div>
+          </div>
+          <div class="form-floating mb-3">
+            <textarea
+              class="form-control"
+              id="provisionalDiagnosis"
+              formControlName="provisionalDiagnosis"
+              rows="3"
+              placeholder="Enter Provisional Diagnosis"
+            ></textarea>
+            <label for="provisionalDiagnosis">Provisional diagnosis</label>
+            <div
+              *ngIf="
+                collectionForm.get('provisionalDiagnosis')?.invalid &&
+                (collectionForm.get('provisionalDiagnosis')?.touched ||
+                  collectionForm.get('provisionalDiagnosis')?.dirty)
+              "
+              class="text-danger"
+              style="font-size: 13px"
+            >
+              *This Field is required.
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="antibioticsGiven">Antibiotics Given</label>
+            <div class="d-flex mt-2">
+              <div class="form-floating flex-fill me-2">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="antibioticsPresent"
+                  formControlName="antibioticsPresent"
+                  placeholder="Present"
+                  aria-label="Antibiotics Given - Present"
+                  required
+                />
+                <label for="antibioticsPresent">Present</label>
+              </div>
+              <div class="form-floating flex-fill">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="antibioticsPast"
+                  formControlName="antibioticsPast"
+                  placeholder="Past"
+                  aria-label="Antibiotics Given - Past"
+                  required
+                />
+                <label for="antibioticsPast">Past</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-floating mb-3">
+            <textarea
+              class="form-control"
+              id="otherInvestigations"
+              formControlName="otherInvestigations"
+              rows="3"
+              placeholder="Enter Other Investigations"
+            ></textarea>
+            <label for="otherInvestigations">Other Investigations</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary btn-lg"
+            data-dismiss="modal"
+            style="border-radius: 0.375rem; padding: 10px 20px"
+            (click)="onClose()"
+          >
+            Close
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg"
+            style="border-radius: 0.375rem; padding: 10px 20px"
+            (click)="onSave()"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,768 @@
+<div class="container pt-0">
+  <h5 class="modal-title mb-2" id="collectionModalLabel">Report</h5>
+
+  <div class="d-flex gap-3 align-items-start">
+    <!-- First Column (Fixed Width) -->
+    <div class="d-flex flex-column" style="width: 40%">
+      <div class="d-flex align-items-center gap-1">
+        <div class="dropdown-container">
+          <dx-drop-down-box
+            labelMode="floating"
+            label="Collection No."
+            [(value)]="selectedCollectionNo"
+            [(opened)]="isGridBoxOpened"
+            [showClearButton]="true"
+            [dataSource]="pendingCollection"
+            displayExpr="COLLECTION_NO"
+            valueExpr="COLLECTION_NO"
+            (onValueChanged)="onCollectionNoChanged($event)"
+            [elementAttr]="{ class: 'grndropdown' }"
+            [inputAttr]="{ 'aria-label': 'Owner' }"
+            [dropDownOptions]="{ 
+              width: 'auto',  
+              maxWidth: '90vw',  
+              position: { 
+                  my: 'left top',  
+                  at: 'left bottom',
+                  of: 'dx-drop-down-box',  
+                  collision: 'fit none' 
+              }
+          }"
+          >
+            <div *dxTemplate="let data of 'content'" class="dropdown-content">
+              <dx-data-grid
+                class="full-width-grid"
+                noDataText="No Data"
+                height="350"
+                [dataSource]="pendingCollection"
+                [showBorders]="true"
+                [allowColumnReordering]="true"
+                [rowAlternationEnabled]="true"
+                rowAlternationInterval="2"
+                [selection]="{
+                  mode: 'single',
+                  showCheckBoxesMode: 'always'
+                }"
+                keyExpr="ID"
+                (onSelectionChanged)="onSelectionChanged($event)"
+              >
+                <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+                <dxo-pager
+                  [visible]="true"
+                  [allowedPageSizes]="allowedPageSizes"
+                  [displayMode]="displayMode"
+                  [showPageSizeSelector]="showPageSizeSelector"
+                  [showInfo]="true"
+                  [showNavigationButtons]="true"
+                ></dxo-pager>
+                <dxo-scrolling mode="standard"></dxo-scrolling>
+
+                <dxo-header-filter [visible]="true">
+                  <dxo-search [enabled]="true"></dxo-search>
+                </dxo-header-filter>
+
+                <dxi-column
+                  dataField="COLLECTION_NO"
+                  caption="Collection No."
+                  width="150"
+                ></dxi-column>
+                <dxi-column
+                  dataField="COLLECTION_DATE"
+                  caption="Collection Date"
+                  dataType="date"
+                  width="150"
+                ></dxi-column>
+                <dxi-column
+                  dataField="REFERENCE_NO"
+                  caption="Reference No."
+                  width="150"
+                ></dxi-column>
+                <dxi-column
+                  dataField="DOCTOR_NAME"
+                  caption="Doctor"
+                  width="200"
+                ></dxi-column>
+                <dxi-column
+                  dataField="PATIENT_NAME"
+                  caption="Patient Name"
+                  width="150"
+                ></dxi-column>
+                <dxi-column
+                  dataField="WARD"
+                  caption="Ward"
+                  width="100"
+                ></dxi-column>
+                <dxi-column
+                  dataField="SPECIMEN"
+                  caption="Specimen"
+                  width="100"
+                ></dxi-column>
+                <dxi-column
+                  dataField="HOSPITAL"
+                  caption="Hospital"
+                  width="150"
+                ></dxi-column>
+              </dx-data-grid>
+            </div>
+          </dx-drop-down-box>
+        </div>
+
+        <!-- <dx-text-box
+          label="Collection No."
+          hint="Collection No."
+          labelMode="floating"
+          stylingMode="filled"
+          [(value)]="selectedCollectionNo"
+          class="flex-grow-1"
+          [readOnly]="true"
+        ></dx-text-box> -->
+
+        <dx-button
+          icon="activefolder"
+          type="default"
+          hint="Select Pending Collection"
+          (onClick)="openPopup()"
+          class="small-button"
+        ></dx-button>
+      </div>
+
+      <dx-text-box
+        label="Patient Name"
+        hint="Enter Patient Name"
+        labelMode="floating"
+        stylingMode="filled"
+        [(value)]="selectedPatientName"
+        [readOnly]="true"
+        class="mt-2"
+      ></dx-text-box>
+
+      <dx-text-box
+        label="Referred By"
+        hint="Enter Doctor's Name"
+        labelMode="floating"
+        stylingMode="filled"
+        [(value)]="selectedDr"
+        [readOnly]="true"
+        class="mt-2"
+      ></dx-text-box>
+    </div>
+
+    <!-- Second Column (Flexible Width) -->
+    <div class="d-flex flex-column flex-grow-1">
+      <dx-text-box
+        label="Collection Time"
+        hint="Enter Value"
+        labelMode="floating"
+        stylingMode="filled"
+        [(value)]="collectionTime"
+        [readOnly]="true"
+      ></dx-text-box>
+
+      <div class="d-flex gap-2 mt-2">
+        <div class="d-flex flex-column flex-grow-1">
+          <dx-text-box
+            label="Age"
+            hint="Enter Age"
+            labelMode="floating"
+            stylingMode="filled"
+            [(value)]="selectedAge"
+            [readOnly]="true"
+          ></dx-text-box>
+        </div>
+
+        <div class="d-flex flex-column flex-grow-1">
+          <dx-text-box
+            label="Sex"
+            hint="Select Sex"
+            labelMode="floating"
+            stylingMode="filled"
+            [(value)]="selectedSex"
+            [readOnly]="true"
+          ></dx-text-box>
+        </div>
+      </div>
+
+      <dx-text-box
+        class="mt-2"
+        label="UHID"
+        hint="Enter UHID"
+        labelMode="floating"
+        stylingMode="filled"
+        [(value)]="selectedUhid"
+        [readOnly]="true"
+      ></dx-text-box>
+    </div>
+
+    <!-- Third Column (Flexible Width) -->
+    <div class="d-flex flex-column flex-grow-1">
+      <dx-text-box
+        label="Reference No."
+        hint="Enter Value"
+        labelMode="floating"
+        stylingMode="filled"
+        [(value)]="selectedReferenceNo"
+        [readOnly]="true"
+      ></dx-text-box>
+
+      <div class="d-flex gap-2 mt-2">
+        <div class="d-flex flex-column flex-grow-1">
+          <dx-text-box
+            label="Unit"
+            hint="Enter Unit"
+            labelMode="floating"
+            stylingMode="filled"
+            [(value)]="selectedUnit"
+            [readOnly]="true"
+          ></dx-text-box>
+        </div>
+
+        <div class="d-flex flex-column flex-grow-1">
+          <dx-text-box
+            label="Ward"
+            hint="Select Ward"
+            labelMode="floating"
+            stylingMode="filled"
+            [(value)]="selectedWard"
+            [readOnly]="true"
+          ></dx-text-box>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Row with Two Columns -->
+  <div class="d-flex gap-3 mt-2">
+    <div class="d-flex flex-column flex-grow-1">
+      <dx-text-box
+        label="Investigation Required"
+        hint="Investigation Required"
+        labelMode="floating"
+        stylingMode="filled"
+        [(value)]="selectedInvestigation"
+        [readOnly]="true"
+      ></dx-text-box>
+    </div>
+
+    <div class="d-flex flex-column flex-grow-1">
+      <dx-text-box
+        label="Nature of Specimen"
+        hint="Nature of Specimen"
+        labelMode="floating"
+        stylingMode="filled"
+        [(value)]="selectedSpecimen"
+        [readOnly]="true"
+      ></dx-text-box>
+    </div>
+  </div>
+</div>
+
+<div class="contain">
+  <!-- DevExtreme Tabs -->
+  <dx-tabs
+    [dataSource]="tabs"
+    [(selectedIndex)]="selectedTabIndex"
+    (onItemClick)="onTabClick($event)"
+    class="filled-tabs"
+  ></dx-tabs>
+
+  <!-- Tab Content -->
+  <div *ngIf="selectedTabIndex === 0">
+    <div>
+      <div class="d-flex gap-2">
+        <!-- Microscopy Grid -->
+        <dx-data-grid
+          class="grid theme-dependent"
+          noDataText="No Data"
+          [showBorders]="true"
+          [allowColumnResizing]="true"
+          [allowColumnReordering]="true"
+          [rowAlternationEnabled]="true"
+          rowAlternationInterval="2"
+          [dataSource]="microscopyData"
+          [showBorders]="true"
+          stylingMode="filled"
+          [editing]="{ mode: 'cell', allowUpdating: true }"
+          (onRowUpdated)="updateSelectedPresence($event)"
+          (onEnterKey)="onEnterKey($event)"
+        >
+          <dxo-toolbar>
+            <dxi-item location="center">
+              <div class="grid-title">Wet Film</div>
+            </dxi-item>
+          </dxo-toolbar>
+          <!-- <dxi-item location="center">
+        <h6>Wet Film</h6>
+      </dxi-item> -->
+
+          <dxi-column
+            dataField="item"
+            caption="Item"
+            [allowEditing]="false"
+            [stylingMode]="'filled'"
+          ></dxi-column>
+
+          <dxi-column
+            dataField="presence"
+            caption="Presence"
+            [allowEditing]="true"
+          >
+            <dxo-lookup
+              [dataSource]="wetFilmResult"
+              displayExpr="Description"
+              valueExpr="Description"
+            >
+            </dxo-lookup>
+          </dxi-column>
+        </dx-data-grid>
+
+        <!-- Gram Stain Grid -->
+        <dx-data-grid
+          class="grid theme-dependent"
+          noDataText="No Data"
+          [showBorders]="true"
+          [allowColumnResizing]="true"
+          [allowColumnReordering]="true"
+          [rowAlternationEnabled]="true"
+          rowAlternationInterval="2"
+          [dataSource]="gramStainData"
+          [showBorders]="true"
+          stylingMode="filled"
+          [editing]="{ mode: 'cell', allowUpdating: true }"
+          (onRowUpdated)="updateGramPresence($event)"
+        >
+          <dxo-toolbar>
+            <dxi-item location="center">
+              <div class="grid-title">Gram Stain</div>
+            </dxi-item>
+          </dxo-toolbar>
+
+          <dxi-column
+            dataField="item"
+            caption="Item"
+            [allowEditing]="false"
+            [stylingMode]="'filled'"
+          ></dxi-column>
+
+          <dxi-column
+            dataField="presence"
+            caption="Presence"
+            [allowEditing]="true"
+            placeholder="Select presence"
+          >
+            <dxo-lookup
+              [dataSource]="gramStainResult"
+              displayExpr="Description"
+              valueExpr="Description"
+            >
+            </dxo-lookup>
+          </dxi-column>
+        </dx-data-grid>
+      </div>
+    </div>
+
+    <div class="mt-3">
+      <div class="custom-field-spacing w-100">
+        <dx-text-box
+          label="Ziehl Neelsen Stain"
+          hint="Ziehl Neelsen Stain"
+          labelMode="floating"
+          [stylingMode]="'filled'"
+          [(value)]="reportData.ZIEHEL_STAIN"
+        >
+        </dx-text-box>
+      </div>
+
+      <div class="custom-field-spacing w-100">
+        <dx-text-box
+          label="Special Stain"
+          hint="Special Stain"
+          labelMode="floating"
+          [stylingMode]="'filled'"
+          [(value)]="reportData.SPECIAL_STAIN"
+        >
+        </dx-text-box>
+      </div>
+
+      <div class="custom-field-spacing w-100">
+        <dx-text-box
+          label="Culture"
+          hint="Culture"
+          labelMode="floating"
+          [stylingMode]="'filled'"
+          [(value)]="reportData.CULTURE"
+        >
+        </dx-text-box>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="custom-field-spacing w-100">
+            <dx-select-box
+              label="Isolate1"
+              hint="Select Isolate"
+              labelMode="floating"
+              [stylingMode]="'filled'"
+              [items]="isolate"
+              displayExpr="Description"
+              valueExpr="Id"
+              [(value)]="reportData.ISOLATE1_IDENTIFICATION"
+              (onValueChanged)="onIsolate1ValueChanged($event)"
+            >
+            </dx-select-box>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="custom-field-spacing w-100">
+            <dx-text-box
+              label="Growth Rate"
+              hint="Growth Rate"
+              labelMode="floating"
+              [stylingMode]="'filled'"
+              [(value)]="reportData.ISOLATE1_GROWTH_RATE"
+            >
+            </dx-text-box>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="custom-field-spacing w-100">
+            <dx-text-box
+              label="Colony Count"
+              hint="Colony Count"
+              labelMode="floating"
+              [stylingMode]="'filled'"
+              [(value)]="reportData.ISOLATE1_COLONY_COUNT"
+            >
+            </dx-text-box>
+          </div>
+        </div>
+      </div>
+
+      <!-- Isolation2 -->
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="custom-field-spacing w-100">
+            <dx-select-box
+              label="Isolate2"
+              hint="Select Isolate"
+              labelMode="floating"
+              [stylingMode]="'filled'"
+              [items]="isolate"
+              displayExpr="Description"
+              valueExpr="Id"
+              [(value)]="reportData.ISOLATE2_IDENTIFICATION"
+              (onValueChanged)="onIsolate2ValueChanged($event)"
+            >
+            </dx-select-box>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="custom-field-spacing w-100">
+            <dx-text-box
+              label="Growth Rate"
+              hint="Growth Rate"
+              labelMode="floating"
+              [stylingMode]="'filled'"
+              [(value)]="reportData.ISOLATE2_GROWTH_RATE"
+            >
+            </dx-text-box>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="custom-field-spacing w-100">
+            <dx-text-box
+              label="Colony Count"
+              hint="Colony Count"
+              labelMode="floating"
+              [stylingMode]="'filled'"
+              [(value)]="reportData.ISOLATE2_COLONY_COUNT"
+            >
+            </dx-text-box>
+          </div>
+        </div>
+      </div>
+
+      <!-- Isolate3 -->
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="custom-field-spacing w-100">
+            <dx-select-box
+              label="Isolate3"
+              hint="Select Isolate"
+              labelMode="floating"
+              [stylingMode]="'filled'"
+              [items]="isolate"
+              displayExpr="Description"
+              valueExpr="Id"
+              [(value)]="reportData.ISOLATE3_IDENTIFICATION"
+              (onValueChanged)="onIsolate3ValueChanged($event)"
+            >
+            </dx-select-box>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="custom-field-spacing w-100">
+            <dx-text-box
+              label="Growth Rate"
+              hint="Growth Rate"
+              labelMode="floating"
+              [stylingMode]="'filled'"
+              [(value)]="reportData.ISOLATE3_GROWTH_RATE"
+            >
+            </dx-text-box>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="custom-field-spacing w-100">
+            <dx-text-box
+              label="Colony Count"
+              hint="Colony Count"
+              labelMode="floating"
+              [stylingMode]="'filled'"
+              [(value)]="reportData.ISOLATE3_COLONY_COUNT"
+            >
+            </dx-text-box>
+          </div>
+        </div>
+      </div>
+
+      <div class="custom-field-spacing w-100">
+        <dx-select-box
+          label="Remarks"
+          hint="Select Remarks"
+          labelMode="floating"
+          [stylingMode]="'filled'"
+          [items]="remarks"
+          displayExpr="Description"
+          valueExpr="Id"
+          [(value)]="reportData.REMARKS"
+          (onValueChanged)="onRemarkValueChanged($event)"
+        >
+        </dx-select-box>
+      </div>
+      <!-- </div> -->
+    </div>
+  </div>
+
+  <div *ngIf="selectedTabIndex === 1">
+    <div>
+      <div class="d-flex gap-3">
+        <!-- Microscopy Grid -->
+        <dx-data-grid
+          class="grid theme-dependent"
+          noDataText="No Data"
+          [showBorders]="true"
+          [allowColumnResizing]="true"
+          [allowColumnReordering]="true"
+          [rowAlternationEnabled]="true"
+          rowAlternationInterval="2"
+          [dataSource]="antibiotics"
+          [showBorders]="true"
+          [editing]="{ mode: 'cell', allowUpdating: true }"
+          [height]="500"
+          [columnAutoWidth]="true"
+          [allowColumnResizing]="true"
+          (onRowUpdated)="updateSelectedAntibiotic($event)"
+          (onEditorPreparing)="onEditorPreparing($event)"
+        >
+          <dxo-scrolling mode="virtual"></dxo-scrolling>
+          <dxi-column
+            dataField="Antibiotic"
+            caption="Antibiotic"
+            [allowEditing]="false"
+          ></dxi-column>
+          <dxi-column
+            dataField="presence"
+            caption="Isolate1"
+            [allowEditing]="true"
+          >
+            <dxo-lookup
+              [dataSource]="sensitivity"
+              displayExpr="Description"
+              valueExpr="Description"
+            ></dxo-lookup>
+          </dxi-column>
+          <dxi-column dataField="Isolate2" caption="Isolate2">
+            <dxo-lookup
+              [dataSource]="sensitivity"
+              displayExpr="Description"
+              valueExpr="Description"
+            ></dxo-lookup>
+          </dxi-column>
+          <dxi-column dataField="Isolate3" caption="Isolate3">
+            <dxo-lookup
+              [dataSource]="sensitivity"
+              displayExpr="Description"
+              valueExpr="Description"
+            ></dxo-lookup>
+          </dxi-column>
+          <dxi-column
+            dataField="AdditionalInfo"
+            caption="Additional Information"
+          ></dxi-column>
+          <dxi-column
+            dataField="antibioticRemarks"
+            caption="Remarks"
+          ></dxi-column>
+        </dx-data-grid>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add margin for spacing -->
+  <div class="mt-3 d-flex gap-3 align-items-start">
+    <!-- Checkboxes Container -->
+    <div class="d-flex gap-3">
+      <!-- First Checkbox: Is Published -->
+      <div class="d-flex align-items-center gap-2">
+        <dx-check-box [(value)]="reportData.IS_PUBLISHED"></dx-check-box>
+        <label class="medium-text">Is Published</label>
+      </div>
+
+      <!-- Second Checkbox: Is Preliminary -->
+      <div class="d-flex align-items-center gap-2">
+        <dx-check-box [(value)]="reportData.IS_PRELIMINERY"></dx-check-box>
+        <label class="medium-text">Is Preliminary</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="form-popup-buttons-container">
+  <div class="popup-footer">
+    <dx-button text="Cancel" stylingMode="outlined" type="normal"></dx-button>
+    <dx-button
+      text="Save"
+      stylingMode="contained"
+      (onClick)="onSave()"
+      type="default"
+    ></dx-button>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="successModal"
+  tabindex="-1"
+  aria-labelledby="successModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="successModalLabel">Success</h5>
+      </div>
+      <div class="modal-body">Report saved successfully</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- popup for pending collections -->
+<dx-popup
+  [(visible)]="isPopupVisible"
+  [width]="'80vw'"
+  [height]="'100vh'"
+  title="Pending Collections"
+  [showCloseButton]="true"
+>
+  <div class="popup-content">
+    <dx-data-grid
+      class="grid theme-dependent"
+      noDataText="No Data"
+      height="75vh"
+      [dataSource]="pendingCollection"
+      [showBorders]="true"
+      [allowColumnResizing]="false"
+      [allowColumnReordering]="true"
+      [rowAlternationEnabled]="true"
+      rowAlternationInterval="2"
+      [selection]="{
+        mode: 'single',
+        showCheckBoxesMode: 'always'
+      }"
+      keyExpr="ID"
+      (onSelectionChanged)="onSelectionChanged($event)"
+      [(selectedRowKeys)]="selectedRowKeys"
+    >
+      <dxo-paging [enabled]="true" [pageSize]="10"></dxo-paging>
+      <dxo-pager
+        [visible]="true"
+        [allowedPageSizes]="allowedPageSizes"
+        [displayMode]="displayMode"
+        [showPageSizeSelector]="showPageSizeSelector"
+        [showInfo]="true"
+        [showNavigationButtons]="true"
+      ></dxo-pager>
+      <dxo-scrolling mode="standard"></dxo-scrolling>
+
+      <dxo-header-filter [visible]="true">
+        <dxo-search [enabled]="true"></dxo-search>
+      </dxo-header-filter>
+      <dxo-selection
+        [mode]="'single'"
+        [allowSelectAll]="false"
+        [showCheckBoxesMode]="'always'"
+      ></dxo-selection>
+      <dxi-column
+        dataField="COLLECTION_NO"
+        caption="Collection No."
+        width="150"
+      ></dxi-column>
+      <dxi-column
+        dataField="COLLECTION_DATE"
+        caption="Collection Date"
+        dataType="date"
+        width="150"
+      ></dxi-column>
+      <dxi-column
+        dataField="REFERENCE_NO"
+        caption="Reference No."
+        width="150"
+      ></dxi-column>
+      <dxi-column
+        dataField="DOCTOR_NAME"
+        caption="Doctor"
+        width="200"
+      ></dxi-column>
+      <dxi-column
+        dataField="PATIENT_NAME"
+        caption="Patient Name"
+        width="150"
+      ></dxi-column>
+      <dxi-column dataField="WARD" caption="Ward" width="100"></dxi-column>
+      <!-- <dxi-column dataField="INVESTIGATION_NAME" caption="Investigation" width="150"></dxi-column> -->
+      <dxi-column
+        dataField="SPECIMEN"
+        caption="Specimen"
+        width="100"
+      ></dxi-column>
+      <dxi-column
+        dataField="HOSPITAL"
+        caption="Hospital"
+        width="150"
+      ></dxi-column>
+    </dx-data-grid>
+
+    <div class="form-popup-buttons-container">
+      <div class="popup-footer">
+        <!-- <dx-button
+          text="Cancel"
+          stylingMode="outlined"
+          type="normal"
+        ></dx-button> -->
+        <dx-button
+          text="Select"
+          stylingMode="contained"
+          type="default"
+          (onClick)="onCollectionChange()"
+        ></dx-button>
+      </div>
+    </div>
+  </div>
+</dx-popup>

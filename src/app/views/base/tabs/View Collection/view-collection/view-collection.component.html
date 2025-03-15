@@ -1,0 +1,726 @@
+<c-row>
+  <c-col xs="12">
+    <c-card class="mb-3">
+      <c-card-header
+        ngPreserveWhitespaces
+        class="card-header-flex"
+        style="width: 100%"
+      >
+        <!-- Predefined Range Dropdown -->
+
+        <div class="form-group" style="width: 40%">
+          <div class="input-group">
+            <mat-form-field appearance="fill" class="full-width">
+              <mat-label>Select Date</mat-label>
+              <mat-select
+                [(value)]="selectedRange"
+                (selectionChange)="onDateRangeChange($event)"
+              >
+                <mat-option value="today">Today</mat-option>
+                <mat-option value="7">Last 7 Days</mat-option>
+                <mat-option value="15">Last 15 Days</mat-option>
+                <mat-option value="30">Last 30 Days</mat-option>
+                <mat-option value="custom">
+                  {{
+                    selectedRange === "custom" && fromDate && toDate
+                      ? (fromDate | date : "yyyy-MM-dd") +
+                        " to " +
+                        (toDate | date : "yyyy-MM-dd")
+                      : "Custom"
+                  }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- <mat-dialog-content>
+          <ng-template>
+            <h2 mat-dialog-title>Select Custom Date Range</h2>
+            <mat-dialog-content>
+              <div class="row">
+                <div class="col-6">
+                  <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>From Date</mat-label>
+                    <input matInput [matDatepicker]="fromDatePicker" [(ngModel)]="fromDate" />
+                    <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #fromDatePicker></mat-datepicker>
+                  </mat-form-field>
+                </div>
+                <div class="col-6">
+                  <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>To Date</mat-label>
+                    <input matInput [matDatepicker]="toDatePicker" [(ngModel)]="toDate" />
+                    <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #toDatePicker></mat-datepicker>
+                  </mat-form-field>
+                </div>
+              </div>
+            </mat-dialog-content>
+            <mat-dialog-actions>
+              <button mat-button mat-dialog-close>Cancel</button>
+              <button mat-raised-button color="primary" (click)="saveCustomDate()">Apply</button>
+            </mat-dialog-actions>
+          </ng-template>
+        </mat-dialog-content> -->
+
+        <!-- <div class="form-group" style="width: 40%">
+          <div class="input-group">
+            <select
+              class="form-select custom-select"
+              id="dateSelector"
+              [(ngModel)]="selectedRange"
+              (change)="onDateRangeChange($event)"
+            >
+              <option value="" disabled hidden>
+                {{ selectedRange === "today" ? "Today" : "Today" }}
+              </option>
+              <option value="today">Today</option>
+              <option value="7">Last 7 Days</option>
+              <option value="15">Last 15 Days</option>
+              <option value="30">Last 30 Days</option>
+              <option value="custom">
+                {{
+                  selectedRange === "custom" && fromDate && toDate
+                    ? (fromDate | date : "yyyy-MM-dd") +
+                      " to " +
+                      (toDate | date : "yyyy-MM-dd")
+                    : "Custom"
+                }}
+              </option>
+            </select>
+          </div>
+        </div> -->
+
+        <div
+          class="modal fade"
+          id="customDateModal"
+          tabindex="-1"
+          aria-labelledby="customDateModalLabel"
+          aria-hidden="true"
+          (hidden.bs.modal)="resetCustomDate()"
+        >
+          <div class="modal-dialog modal-md">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="customDateModalLabel">
+                  Select Custom Date Range
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-6">
+                    <label for="fromDate">From Date:</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="fromDate"
+                      [(ngModel)]="fromDate"
+                    />
+                  </div>
+                  <div class="col-6">
+                    <label for="toDate">To Date:</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="toDate"
+                      [(ngModel)]="toDate"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="saveCustomDate()"
+                >
+                  Apply
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="filter-section d-flex flex-wrap align-items-center"
+          style="width: 50%"
+        >
+          <div class="" style="flex: 1; max-width: 65%; margin-right: 2%">
+            <select
+              class="form-select"
+              [(ngModel)]="selectedColumn"
+              (change)="onColumnChange()"
+            >
+              <option value="" disabled>Columns</option>
+              <option value="HOSPITAL_NAME">Hospital</option>
+              <option value="UHID">UHID</option>
+              <option value="WARD">Ward</option>
+              <option value="UNIT_NAME">Unit</option>
+              <option value="INVESTIGATION_NAME">Investigation</option>
+              <option value="DOCTOR_NAME">Referred By</option>
+              <option value="STATUS_NAME">Status</option>
+            </select>
+          </div>
+          <div style="flex: 1; max-width: 45%">
+            <input
+              class="form-control column-filter"
+              [(ngModel)]="filterValue"
+              (input)="applyFilter()"
+              placeholder="Filter"
+            />
+          </div>
+        </div>
+      </c-card-header>
+
+      <c-card-body>
+        <div class="table-wrapper">
+          <div class="table-responsive" class="sticky-header">
+            <!-- Table -->
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Collection No</th>
+                  <th>Time</th>
+                  <th>Hospital</th>
+                  <th>UHID</th>
+                  <th>Patient Name</th>
+                  <th>Reference No</th>
+                  <th>Ward/Unit</th>
+                  <th>Investigation</th>
+                  <th>Referred By</th>
+
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="filteredCollectionList.length === 0">
+                  <td colspan="10" class="text-center">No data available</td>
+                </tr>
+                <tr
+                  *ngFor="
+                    let log of filteredCollectionList
+                      | paginate
+                        : { itemsPerPage: 10, currentPage: currentPage }
+                  "
+                >
+                  <td>{{ log.COLLECTION_NO }}</td>
+                  <td>
+                    <div style="width: 180px">
+                      <span class="date">{{
+                        log.FORMATTED_DATE_TIME.split(" ")[0]
+                      }}</span>
+
+                      <span class="time" style="margin-left: 5px">
+                        {{
+                          log.FORMATTED_DATE_TIME.split(" ")[1] +
+                            " " +
+                            log.FORMATTED_DATE_TIME.split(" ")[2]
+                        }}
+                      </span>
+                    </div>
+                  </td>
+                  <td>{{ log.HOSPITAL_NAME }}</td>
+                  <td>{{ log.UHID }}</td>
+                  <td>{{ log.PATIENT_NAME }}</td>
+                  <td>{{ log.REFERENCE_NO }}</td>
+                  <td>{{ log.WARD }}/{{ log.UNIT_NAME }}</td>
+                  <td>{{ log.INVESTIGATION_NAME }}</td>
+                  <td>{{ log.DOCTOR_NAME }}</td>
+                  <!-- <td>{{ log.STATUS_NAME }}</td> -->
+                  <td>
+                    <!-- Edit Button -->
+                    <button
+                      class="btn btn-sm"
+                      (click)="openEditPopup(log?.ID)"
+                      data-toggle="modal"
+                      data-target="#editPopup"
+                      title="View"
+                    >
+                      <i
+                        class="bi bi-flag-fill"
+                        [ngClass]="{
+                          'status-pending': log?.STATUS_ID === 0,
+                          'status-completed': log?.STATUS_ID === 2,
+                          'status-other': log?.STATUS_ID === 1
+                        }"
+                        [attr.title]="
+                          log?.STATUS_ID === 0
+                            ? 'Pending'
+                            : log?.STATUS_ID === 2
+                            ? 'Generated, Verified'
+                            : log?.STATUS_ID === 1
+                            ? 'Generated, Not Verified'
+                            : ''
+                        "
+                        data-toggle="tooltip"
+                      ></i>
+                    </button>
+
+                    <button
+                      *ngIf="log.STATUS_ID === 2"
+                      class="btn btn-sm"
+                      title="View PDF"
+                      (click)="viewPdf(log)"
+                    >
+                      <i class="bi bi-file-earmark-pdf"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </c-card-body>
+
+      <div
+        class="d-flex flex-wrap justify-content-between align-items-center pagination-container"
+      >
+        <div class="total-records mx-2 mb-2">
+          Total Records: {{ collectionList.length }}
+        </div>
+        <div class="pagination-controls">
+          <pagination-controls
+            (pageChange)="currentPage = $event"
+          ></pagination-controls>
+        </div>
+      </div>
+    </c-card>
+  </c-col>
+</c-row>
+
+<!-- Edit -->
+
+<!-- The Edit Modal -->
+<div
+  class="modal fade custom-modal p-0 m-0"
+  id="editPopup"
+  tabindex="-1"
+  aria-labelledby="editPopupLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl mt-1" style="margin: 0px; padding: 0px">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="editPopupLabel">Collection Details</h5>
+        <!-- <butt
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="onClose()"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <form
+        class="form-content"
+        [formGroup]="collectionForm"
+        style="height: 85vh; margin-top: 5px"
+      >
+        <div
+          class="modal-body"
+          style="height: 75vh; max-height: 500vh; overflow-y: auto"
+        >
+          <div class="row">
+            <!-- Collection No -->
+            <div class="col-md-4">
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="collectionNo"
+                  formControlName="collectionNo"
+                  placeholder="Enter Collection No"
+                  readonly
+                />
+                <label for="collectionNo" class="label">Collection No</label>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-floating mb-3">
+                <input
+                  class="form-control"
+                  id="time"
+                  formControlName="time"
+                  readonly
+                />
+                <label for="time" class="label">Time</label>
+                <div
+                  *ngIf="
+                    collectionForm.get('time')?.invalid &&
+                    (collectionForm.get('time')?.touched ||
+                      collectionForm.get('time')?.dirty)
+                  "
+                  class="text-danger"
+                  style="font-size: 13px"
+                >
+                  *This Field is required.
+                </div>
+              </div>
+            </div>
+
+            <!-- Reference No -->
+            <div class="col-md-4">
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="referenceNo"
+                  formControlName="referenceNo"
+                  placeholder="Enter Reference No"
+                  readonly
+                />
+                <label for="referenceNo" class="label">Reference No</label>
+                <div *ngIf="isFieldInvalid('referenceNo')" class="text-danger">
+                  *This field is required.
+                </div>
+              </div>
+            </div>
+
+            <!-- Time -->
+          </div>
+          <div class="row">
+            <!-- Patient Name -->
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="patientName"
+                  formControlName="patientName"
+                  placeholder="Enter Patient Name"
+                  readonly
+                />
+                <label for="patientName" class="label">Patient Name</label>
+              </div>
+            </div>
+
+            <!-- Age -->
+            <div class="col-md-3 col-6">
+              <div class="form-floating mb-3">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="age"
+                  formControlName="age"
+                  placeholder="Enter Age"
+                  readonly
+                  [ngClass]="{ 'is-invalid': isFieldInvalid('age') }"
+                />
+                <label for="age" class="label">Age *</label>
+                <!-- <div *ngIf="isFieldInvalid('age')" class="text-danger">
+                  *This field is required.
+                </div> -->
+                <!-- <div
+                  *ngIf="collectionForm.get('age')?.hasError('invalidAge')"
+                  class="text-danger"
+                >
+                  *Invalid Age.
+                </div> -->
+              </div>
+            </div>
+
+            <!-- Sex -->
+            <div class="col-md-3 col-6">
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="sex"
+                  [value]="collectionForm.get('sex')?.value"
+                  readonly
+                />
+                <label for="sex" class="label">Sex</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <!-- Hospital Dropdown -->
+            <!-- <div class="row"> -->
+            <!-- Hospital Readonly Text -->
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="hospitalName"
+                  [value]="collectionForm.get('hospitalName')?.value"
+                  readonly
+                />
+                <label for="hospitalName" class="label">Hospital</label>
+              </div>
+            </div>
+            <!-- </div> -->
+
+            <!-- Ward -->
+            <div class="col-md-3 col-6">
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="ward"
+                  formControlName="ward"
+                  placeholder="Enter Ward"
+                  [ngClass]="{ 'is-invalid': isFieldInvalid('ward') }"
+                  readonly
+                />
+                <label for="ward" class="label">Ward *</label>
+                <!-- <div *ngIf="isFieldInvalid('ward')" class="text-danger">
+                  *This field is required.
+                </div> -->
+              </div>
+            </div>
+
+            <!-- Unit -->
+            <!-- <div class="col-md-3">
+              <div class="form-floating mb-3"> -->
+            <div class="col-md-3 col-6">
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="unit"
+                  formControlName="unit"
+                  placeholder="Enter Unit"
+                  [ngClass]="{ 'is-invalid': isFieldInvalid('unit') }"
+                  readonly
+                />
+                <label for="unit" class="label">Unit *</label>
+                <!-- <div *ngIf="isFieldInvalid('unit')" class="text-danger">
+                  *This field is required.
+                </div> -->
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <!-- UHID -->
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="uhid"
+                  formControlName="uhid"
+                  placeholder="Enter UHID"
+                  readonly
+                />
+                <label for="uhid" class="label">UHID</label>
+                <div *ngIf="isFieldInvalid('uhid')" class="text-danger">
+                  *This field is required.
+                </div>
+              </div>
+            </div>
+
+            <!-- Income -->
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="income"
+                  formControlName="income"
+                  placeholder="Enter Income"
+                  readonly
+                />
+                <label for="income" class="label">Income</label>
+                <div *ngIf="isFieldInvalid('income')" class="text-danger">
+                  *This field is required.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <!-- Investigation Required -->
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <!-- Convert dropdown to a readonly input -->
+                <input
+                  type="text"
+                  class="form-control"
+                  id="investigationReq"
+                  [value]="collectionForm.get('investigationReq')?.value"
+                  readonly
+                />
+                <label for="investigationReq" class="label"
+                  >Investigation Required</label
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Nature of Specimen -->
+            <div class="col-md-12">
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="natureSpecimen"
+                  formControlName="natureSpecimen"
+                  placeholder="Enter Nature of Specimen"
+                  readonly
+                />
+                <label for="natureSpecimen" class="label"
+                  >Nature of Specimen</label
+                >
+                <div
+                  *ngIf="isFieldInvalid('natureSpecimen')"
+                  class="text-danger"
+                >
+                  *This field is required.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <!-- Referred by Dr. -->
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="referredByDr"
+                  formControlName="referredByDr"
+                  placeholder="Enter Doctor's Name"
+                  readonly
+                />
+                <label for="referredByDr" class="label">Referred by Dr.</label>
+                <!-- <div *ngIf="isFieldInvalid('referredByDr')" class="text-danger">
+                      *This field is required.
+                    </div> -->
+              </div>
+            </div>
+
+            <!-- Mobile -->
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="mobile"
+                  formControlName="mobile"
+                  placeholder="Enter Mobile"
+                  readonly
+                />
+                <label for="mobile" class="label">Mobile</label>
+                <!-- <div *ngIf="isFieldInvalid('mobile')" class="text-danger">
+                      *This field is required and must be a valid number.
+                    </div> -->
+              </div>
+            </div>
+          </div>
+
+          <div class="form-floating mb-3">
+            <textarea
+              type="text"
+              class="form-control"
+              id="description"
+              [value]="collectionForm.get('description')?.value"
+              readonly
+            ></textarea>
+            <label for="description" class="label"
+              >Brief Relevant Clinical and Laboratory Data</label
+            >
+          </div>
+          <div class="row">
+            <!-- Provisional Diagnosis -->
+            <div class="col-12">
+              <div class="form-floating mb-3">
+                <textarea
+                  class="form-control"
+                  id="provisionalDiagnosis"
+                  formControlName="provisionalDiagnosis"
+                  placeholder="Enter Provisional Diagnosis"
+                  rows="3"
+                  readonly
+                ></textarea>
+                <label for="provisionalDiagnosis" class="label"
+                  >Provisional Diagnosis</label
+                >
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <label class="labelbold">Antibiotics Given</label>
+          </div>
+
+          <div class="mb-1">
+            <div class="row">
+              <!-- Present -->
+
+              <div class="col-md-6">
+                <div class="form-floating mb-3">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="antibioticsPresent"
+                    formControlName="antibioticsPresent"
+                    placeholder="Present"
+                    readonly
+                  />
+                  <label for="antibioticsPresent" class="label">Present</label>
+                </div>
+              </div>
+
+              <!-- Past -->
+              <div class="col-md-6">
+                <div class="form-floating mb-3">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="antibioticsPast"
+                    formControlName="antibioticsPast"
+                    placeholder="Past"
+                    readonly
+                  />
+                  <label for="antibioticsPast" class="label">Past</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Other Investigation -->
+            <div class="col-12">
+              <!-- <label for="otherInvestigation" class="form-label label"
+                >Other Investigation</label
+              > -->
+              <div class="form-floating mb-3">
+                <textarea
+                  class="form-control"
+                  id="otherInvestigation"
+                  formControlName="otherInvestigations"
+                  placeholder="Enter Other Investigation"
+                  rows="3"
+                  readonly
+                ></textarea>
+                <label for="otherInvestigation" class="label"
+                  >Other Investigation</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer p-0 m-0">
+          <button
+            type="button"
+            class="btn btn-secondary btn-lg me-3 mt-1"
+            data-dismiss="modal"
+            style="border-radius: 0.375rem; padding: 10px"
+            (click)="onClose()"
+          >
+            Close
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

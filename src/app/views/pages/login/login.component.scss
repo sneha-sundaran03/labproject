@@ -1,0 +1,11 @@
+.text-danger {
+    color: red;
+    font-size: 0.9rem;
+  }
+
+  .is-invalid-group {
+    border: 1px solid red;
+    border-radius: 4px; /* Match your input styling */
+    padding: 0.375rem 0.75rem; /* Adjust if necessary to match the default spacing */
+  }
+  

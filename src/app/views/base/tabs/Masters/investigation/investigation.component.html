@@ -1,0 +1,168 @@
+<div class="view-wrapper list-page">
+  <dx-data-grid
+    class="grid theme-dependent"
+    id="gridContainer"
+    [remoteOperations]="true"
+    [dataSource]="dataSource"
+    [allowColumnReordering]="true"
+    [rowAlternationEnabled]="true"
+    [showBorders]="true"
+    [width]="'100%'"
+    [height]="'auto'"
+    (onEditingStart)="onEditingStart($event)"
+    (onRowRemoving)="delete_Investigation_Details($event)"
+    (onExporting)="onExporting($event)"
+    style="margin-top: 20px"
+  >
+  <dxo-export
+  [enabled]="true"
+  [allowExportSelectedData]="true"
+  [formats]="['xlsx', 'pdf']"
+>
+</dxo-export>
+    <dxo-toolbar class="toolbar-spacing">
+      <dxi-item
+        location="before"
+        text="Investigation"
+        cssClass="font-bold text-lg"
+      ></dxi-item>
+      <dxi-item name="searchPanel" locateInMenu="auto"></dxi-item>
+      <dxi-item name="" locateInMenu="auto"></dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <dx-button
+          icon="plus"
+          type="default"
+          stylingMode="contained"
+          (onClick)="openPopup()"
+        ></dx-button>
+      </dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <dx-button
+          icon="refresh"
+          stylingMode="text"
+          (onClick)="refreshData()"
+        ></dx-button>
+      </dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
+      </dxi-item>
+      <dxi-item name="exportButton"></dxi-item>
+    </dxo-toolbar>
+    <dxi-column
+      dataField="INVESTIGATION"
+      caption="Investigation"
+      style="margin-top: 40px"
+    ></dxi-column>
+    <dxi-column
+      dataField="IS_INACTIVE"
+      caption="Status"
+      [calculateCellValue]="formatStatus"
+    ></dxi-column>
+
+    <dxo-search-panel
+      [visible]="true"
+      [highlightCaseSensitive]="true"
+    ></dxo-search-panel>
+
+    <dxo-header-filter [visible]="showHeaderFilter"></dxo-header-filter>
+
+    <dxo-editing
+      mode="popup"
+      [allowUpdating]="true"
+      [allowDeleting]="true"
+      [allowAdding]="true"
+      [useIcons]="true"
+    ></dxo-editing>
+    <dxo-paging [pageSize]="10"></dxo-paging>
+    <dxo-pager
+      [visible]="true"
+      [showPageSizeSelector]="true"
+      [allowedPageSizes]="[2, 5, 10, 100]"
+    ></dxo-pager>
+  </dx-data-grid>
+  <!-- ====================================Add Investigation================================= -->
+  <dx-popup
+    [title]="'New Investigation'"
+    [(visible)]="isAddPop"
+    [width]="popupWidth"
+    [height]="250"
+  >
+    <form [formGroup]="formsource">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <label>Investigation</label>
+        <input
+          type="text"
+          name="Investigation"
+          class="form-control"
+          formControlName="Investigation"
+          placeholder="Investigation Name"
+          style="width: 250px"
+        />
+      </div>
+      <label for="checboxadd" class="me-5">Inactive</label>
+      <dx-check-box
+        class="mt-4"
+        formControlName="status"
+        [elementAttr]="{ 'aria-label': 'Unchecked' }"
+        id="checboxadd"
+      ></dx-check-box>
+      <div class="d-flex justify-content-end mt-2 me-3">
+        <dx-button
+          text="save"
+          class="me-2"
+          type="default"
+          stylingMode="contained"
+          (onClick)="add_Investigation_Data()"
+        ></dx-button>
+        <button class="btn text-dark border border-1" (click)="closePopup()">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </dx-popup>
+
+  <!--============================edit Investigation============= -->
+  <dx-popup
+    [title]="'Edit Investigation'"
+    [(visible)]="isEditPop"
+    [width]="popupWidth"
+    [height]="250"
+    [closeOnOutsideClick]="true"
+  >
+    <dx-form [formData]="editInvestigation">
+      <dxi-item
+        class="mt-4"
+        placeholder="Investigation Names"
+        dataField="INVESTIGATION"
+        editorType="dxTextBox"
+        [label]="{ text: 'Investigation Name' ,showColon: false}"
+      ></dxi-item>
+
+      <dxi-item
+        editorType="dxCheckBox"
+        dataField="IS_INACTIVE"
+        [label]="{ text: 'Inactive' ,showColon: false}"
+        caption="Inactive"
+        title="Inactive"
+        name="Inactive"
+        [editorOptions]="{ text: '' }"
+      ></dxi-item>
+
+      <dxi-item class="d-flex justify-content-end mt-4">
+        <button
+          class="btn text-dark border border-1 me-3"
+          (click)="closePopup()"
+        >
+          Cancel
+        </button>
+        <dx-button
+          class="me-2"
+          text="Updates"
+          type="default"
+          stylingMode="contained"
+          (onClick)="update_Invesigation_Details()"
+        ></dx-button>
+      </dxi-item>
+    </dx-form>
+  </dx-popup>
+</div>

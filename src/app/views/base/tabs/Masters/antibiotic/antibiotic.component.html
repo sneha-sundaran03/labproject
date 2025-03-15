@@ -1,0 +1,181 @@
+<div class="view-wrapper list-page">
+  <dx-data-grid
+    id="gridContainer"
+    [dataSource]="dataSource"
+    [remoteOperations]="false"
+    [allowColumnReordering]="true"
+    [rowAlternationEnabled]="true"
+    [showBorders]="true"
+    [width]="'100%'"
+    [height]="'auto'"
+    (onEditingStart)="onEditingStart($event)"
+    (onExporting)="onExporting($event)"
+  >
+
+    <dxo-search-panel
+      [visible]="true"
+      [highlightCaseSensitive]="true"
+    ></dxo-search-panel>
+    <dxo-export
+    [enabled]="true"
+    [allowExportSelectedData]="true"
+    [formats]="['xlsx', 'pdf']"
+  >
+  </dxo-export>
+
+    <dxo-toolbar>
+      <dxi-item name="searchPanel" locateInMenu="before"></dxi-item>
+      <dxi-item location="before" text="Antibiotics" cssClass="font-bold text-lg" alignment="left"></dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <dx-button icon="plus" type="default" stylingMode="contained" (onClick)="openPopup()"></dx-button>
+      </dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <dx-button icon="refresh" stylingMode="text" (onClick)="refreshData()"></dx-button>
+      </dxi-item>
+      <dxi-item name="exportButton"></dxi-item>
+    </dxo-toolbar>
+    <dxo-header-filter [visible]="true" ></dxo-header-filter>
+    <dxo-editing
+      mode="popup"
+      [allowUpdating]="true"
+      [allowDeleting]="true"
+      [allowAdding]="true"
+      [useIcons]="true"
+    ></dxo-editing>
+
+    <dxo-paging [pageSize]="10"></dxo-paging>
+    <dxo-pager
+      [visible]="true"
+      [showPageSizeSelector]="true"
+      [allowedPageSizes]="[10, 25, 50, 100]"
+    ></dxo-pager>
+
+    <dxi-column
+      dataField="ANTIBIOTIC"
+      caption="Antibiotic"
+      alignment="left"
+    ></dxi-column>
+    <dxi-column
+      caption="Class Id"
+      dataField="CLASS_ID"
+      alignment="left"
+    ></dxi-column>
+    <dxi-column
+      caption="Class Name"
+      dataField="CLASS_Name"
+      alignment="left"
+    ></dxi-column>
+
+
+    <dxi-column
+    dataField="DISPLAY_ORDER"
+    caption="Display Order"
+    dataType="number"
+    alignment="left"
+  ></dxi-column>
+  <dxi-column
+  dataField="IS_INACTIVE"
+  caption="Status"
+  alignment="left"
+  [calculateCellValue]="formatStatus"
+></dxi-column>
+ 
+  </dx-data-grid>
+  <!-- =============================== Add Antibiotics============================= -->
+
+  <dx-popup
+    [title]="'New Antibiotics'"
+    [(visible)]="isAddPopup"
+    [width]="500"
+    [height]="350"
+  >
+    <dx-form id="form" [formGroup]="formsource">
+      <dxi-item itemType="group" cssClass="form-group" [colCount]="1">
+        <dxi-item itemType="group" [colSpan]="3">
+          <dxi-item dataField="Antibiotic" [label]="{text:'Antibiotic',showColon: false}"></dxi-item>
+         <dxi-item [label]="{text:'Classification',showColon: false}">
+           <dx-select-box
+          [(value)]="classification.ID"
+          [items]="classification"
+          displayExpr="DESCRIPTION"
+          valueExpr="ID"
+          style="flex: 1"
+          (onValueChanged)="onCLassificationSchemaChange($event)"
+         
+        ></dx-select-box>
+         </dxi-item>
+            <dxi-item itemType="group" [colSpan]="3">
+            <dxi-item location="" dataField="display_Order" [label]="{text:'Display Order',showColon: false}" [colSpan]="2"></dxi-item>
+            <dxi-item
+            editorType="dxCheckBox"
+            dataField="IS_INACTIVE"
+            title="Inactive"
+            name="Inactive"
+            [label]="{text:'Inactive',showColon: false}"
+            [colSpan]="1"
+            
+          ></dxi-item>
+          </dxi-item>
+          
+   
+          <dxi-item class="d-flex justify-content-end mt-4">
+            <button
+              class="btn text-dark border border-1 me-3"
+              (click)="closePopup()"
+            >
+              Cancel
+            </button>
+            <dx-button
+              class=""
+              text="Save"
+              type="default"
+              stylingMode="contained"
+              (onClick)="Add_Antibiotic_Details()"
+            ></dx-button>
+          </dxi-item>
+        </dxi-item>
+      </dxi-item>
+    </dx-form>
+  </dx-popup>
+
+  <!-- =========================== Update Antibiotic============================== -->
+
+  <dx-popup
+    [title]="'Update Antibiotics'"
+    [(visible)]="isEditPop"
+    [width]="400"
+    [height]="260"
+    [closeOnOutsideClick]="true"
+  >
+    <dx-form id="form" [formData]="editAntibioticsData">
+      <dxi-item itemType="group" cssClass="form-group" [colCount]="1">
+        <dxi-item itemType="group" [colSpan]="3">
+          <dxi-item dataField="Antibiotic" [label]="{text:'Antibiotic',showColon: false}"></dxi-item>
+          <dxi-item
+            dataField="DESCRIPTION"
+            editorType="dxSelectBox"
+            [label]="{text:'Classification',showColon: false}"
+            [editorOptions]="{ items: DESCRIPTION, 
+              searchEnabled: true  }"
+           
+          ></dxi-item>
+
+          <dxi-item class="d-flex justify-content-end mt-4">
+            <button
+              class="btn text-dark border border-1 me-3"
+              (click)="closePopup()"
+            >
+              Cancel
+            </button>
+            <dx-button
+              class="me-2"
+              text="Save"
+              type="default"
+              stylingMode="contained"
+            ></dx-button>
+          </dxi-item>
+        </dxi-item>
+      </dxi-item>
+    </dx-form>
+  </dx-popup>
+</div>

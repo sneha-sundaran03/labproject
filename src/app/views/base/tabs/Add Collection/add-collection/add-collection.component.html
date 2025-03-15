@@ -1,0 +1,484 @@
+<div class="container mt-1">
+  <h5 class="modal-title mb-4" id="collectionModalLabel">New Collection</h5>
+
+  <div
+    class="modal fade"
+    id="successModal"
+    tabindex="-1"
+    aria-labelledby="successModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="successModalLabel">Success</h5>
+        </div>
+        <div class="modal-body">
+          Collection saved successfully with No. {{ collectionNumber }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="collectionForm" (ngSubmit)="onSave()">
+    <div class="row">
+      <!-- Collection No -->
+      <div class="col-md-4">
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="collectionNo"
+            formControlName="collectionNo"
+            placeholder="Enter Collection No"
+            readonly
+          />
+          <label for="collectionNo" class="label">Collection No</label>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="time"
+            formControlName="time"
+            placeholder="Enter Collection No"
+            readonly
+          />
+          <label for="time" class="label">Time</label>
+          <div
+            *ngIf="
+              collectionForm.get('time')?.invalid &&
+              (collectionForm.get('time')?.touched ||
+                collectionForm.get('time')?.dirty)
+            "
+            class="text-danger"
+            style="font-size: 13px"
+          >
+            *This Field is required.
+          </div>
+        </div>
+      </div>
+
+      <!-- Reference No -->
+      <div class="col-md-4">
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="referenceNo"
+            formControlName="referenceNo"
+            placeholder="Enter Reference No"
+          />
+          <label for="referenceNo" class="label">Reference No</label>
+          <!-- <div *ngIf="isFieldInvalid('referenceNo')" class="text-danger">
+            *This field is required.
+          </div> -->
+        </div>
+      </div>
+
+      <!-- Time -->
+    </div>
+    <div class="row">
+      <!-- Patient Name -->
+      <div class="col-md-6">
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="patientName"
+            formControlName="patientName"
+            placeholder="Enter Patient Name"
+            [ngClass]="{ 'is-invalid': isFieldInvalid('patientName') }"
+          />
+          <label for="patientName" class="label">Patient Name *</label>
+          <!-- <div *ngIf="isFieldInvalid('patientName')" class="text-danger">
+            *This field is required.
+          </div> -->
+        </div>
+      </div>
+
+      <!-- Age -->
+
+
+      <div class="col-md-3 col-6">
+        <div class="form-floating mb-3">
+          <input
+            type="number"
+            class="form-control"
+            id="age"
+            formControlName="age"
+            placeholder="Enter Age"
+            [ngClass]="{ 'is-invalid': isFieldInvalid('age') }"
+          />
+          <label for="age" class="label">Age *</label>
+          <!-- <div *ngIf="isFieldInvalid('age')" class="text-danger">
+            *This field is required.
+          </div> -->
+          <!-- <div
+            *ngIf="collectionForm.get('age')?.hasError('invalidAge')"
+            class="text-danger"
+          >
+            *Invalid Age.
+          </div> -->
+        </div>
+      </div>
+
+      <!-- Sex -->
+      <div class="col-md-3 col-6">
+        <div class="form-floating mb-3">
+          <select class="form-select" id="sex" formControlName="sex" [ngClass]="{ 'is-invalid': isFieldInvalid('sex') }">
+            <option value="" disabled>Select Sex *</option>
+            <option *ngFor="let sex of gender" [value]="sex.DESCRIPTION">
+              {{ sex.DESCRIPTION }}
+            </option>
+          </select>
+          <label for="sex" class="label">Sex</label>
+          <!-- <div *ngIf="isFieldInvalid('sex')" class="text-danger">
+            *This field is required.
+          </div> -->
+        </div>
+      </div>
+
+
+    </div>
+    <div class="row">
+      <!-- Hospital Dropdown -->
+      <div class="col-md-6">
+        <div class="form-floating mb-3">
+          <select
+            class="form-select"
+            id="hospital"
+            formControlName="hospital"
+            [ngClass]="{ 'is-invalid': isFieldInvalid('hospital') }"
+            (change)="onHospitalChange($event)"
+          >
+            <option value="" disabled>Select Hospital *</option>
+            <!-- Dynamically bind hospitals -->
+            <option *ngFor="let hospital of hospitals" [value]="hospital.ID">
+              {{ hospital.HOSPITAL }}
+            </option>
+          </select>
+          <label for="hospital" class="label">Hospital</label>
+          <!-- <div *ngIf="isFieldInvalid('hospital')" class="text-danger">
+            *This field is required.
+          </div> -->
+        </div>
+      </div>
+
+      <!-- Ward -->
+      <!-- <div class="col-md-3">
+        <div class="form-floating mb-3"> -->
+      <div class="col-md-3 col-6">
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="ward"
+            formControlName="ward"
+            placeholder="Enter Ward"
+            [ngClass]="{ 'is-invalid': isFieldInvalid('ward') }"
+          />
+          <label for="ward" class="label">Ward *</label>
+          <!-- <div *ngIf="isFieldInvalid('ward')" class="text-danger">
+            *This field is required.
+          </div> -->
+        </div>
+      </div>
+
+      <!-- Unit -->
+      <!-- <div class="col-md-3">
+        <div class="form-floating mb-3"> -->
+      <div class="col-md-3 col-6">
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="unit"
+            formControlName="unit"
+            placeholder="Enter Unit"
+            [ngClass]="{ 'is-invalid': isFieldInvalid('unit') }"
+          />
+          <label for="unit" class="label">Unit *</label>
+          <!-- <div *ngIf="isFieldInvalid('unit')" class="text-danger">
+            *This field is required.
+          </div> -->
+        </div>
+      </div>
+
+
+      
+    </div>
+    <div class="row">
+      <!-- UHID -->
+      <div class="col-md-6">
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="uhid"
+            formControlName="uhid"
+            placeholder="Enter UHID"
+            [ngClass]="{ 'is-invalid': isFieldInvalid('uhid') }"
+          />
+          <label for="uhid" class="label">UHID *</label>
+          <!-- <div *ngIf="isFieldInvalid('uhid')" class="text-danger">
+            *This field is required.
+          </div> -->
+        </div>
+      </div>
+
+      <!-- Income -->
+      <div class="col-md-6">
+        <div class="form-floating mb-3">
+          <input
+            type="number"
+            class="form-control"
+            id="income"
+            formControlName="income"
+            placeholder="Enter Income"
+          />
+          <label for="income" class="label">Income</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Investigation Required Dropdown -->
+      <div class="col-md-6">
+        <div class="form-floating mb-3">
+          <select
+            class="form-select"
+            id="investigationReq"
+            formControlName="investigationReq"
+            (change)="logSelectedValue()"
+            [ngClass]="{ 'is-invalid': isFieldInvalid('investigationReq') }"
+          >
+            <option value="" disabled>Select Investigation Required *</option>
+            <option
+              *ngFor="let investigation of investigations"
+              [value]="investigation.ID"
+            >
+              {{ investigation.INVESTIGATION }}
+            </option>
+          </select>
+          <label for="investigationReq" class="label"
+            >Investigation Required</label
+          >
+        </div>
+      </div>
+
+      <!-- Other Investigation Text Box -->
+      <div class="col-md-6" *ngIf="showTextBox">
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="otherInvestigation"
+            formControlName="otherInvestigation"
+            placeholder="Enter Other Investigation"
+            (change)="onOtherInvestigationChange($event)"
+            [ngClass]="{ 'is-invalid': isFieldInvalid('otherInvestigation') }"
+          />
+          <label for="otherInvestigation">Other Investigation *</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Nature of Specimen -->
+      <div class="col-md-12">
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="natureSpecimen"
+            formControlName="natureSpecimen"
+            placeholder="Enter Nature of Specimen"
+            [ngClass]="{ 'is-invalid': isFieldInvalid('natureSpecimen') }"
+          />
+          <label for="natureSpecimen" class="label">Nature of Specimen *</label>
+          <!-- <div *ngIf="isFieldInvalid('natureSpecimen')" class="text-danger">
+            *This field is required.
+          </div> -->
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <!-- Referred by Dr. -->
+      <div class="col-md-6">
+        <div class="form-floating mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="referredByDr"
+            formControlName="referredByDr"
+            placeholder="Enter Doctor's Name"
+          />
+          <label for="referredByDr" class="label">Referred by Dr.</label>
+          <!-- <div *ngIf="isFieldInvalid('referredByDr')" class="text-danger">
+                  *This field is required.
+                </div> -->
+        </div>
+      </div>
+
+      <!-- Mobile -->
+      <div class="col-md-6">
+        <div class="form-floating mb-3">
+          <input
+            type="tel"
+            class="form-control"
+            id="mobile"
+            formControlName="mobile"
+            placeholder="Enter Mobile"
+            [ngClass]="{ 'is-invalid': isFieldInvalid('mobile') }"
+          />
+          <label for="mobile" class="label">Mobile *</label>
+          <div
+            *ngIf="
+              collectionForm.get('mobile')?.invalid &&
+              (collectionForm.get('mobile')?.touched ||
+                collectionForm.get('mobile')?.dirty)
+            "
+            class="text-danger"
+            style="font-size: 13px"
+          >
+            {{ mobileErrors }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-floating mb-3">
+      <textarea
+        class="form-control"
+        id="clinicalData"
+        formControlName="clinicalData"
+        placeholder="Enter Clinical Data"
+        rows="3"
+      ></textarea>
+      <label for="clinicalData" class="label"
+        >Brief Relevant Clinical and Laboratory Data</label
+      >
+    </div>
+    <div class="row">
+      <!-- Provisional Diagnosis -->
+      <div class="col-12">
+        <div class="form-floating mb-3">
+          <textarea
+            class="form-control"
+            id="provisionalDiagnosis"
+            formControlName="provisionalDiagnosis"
+            placeholder="Enter Provisional Diagnosis"
+            rows="3"
+          ></textarea>
+          <label for="provisionalDiagnosis" class="label"
+            >Provisional Diagnosis</label
+          >
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <label class="labelbold">Antibiotics Given</label>
+    </div>
+
+    <div class="mb-1">
+      <div class="row">
+        <!-- Present -->
+
+        <div class="col-md-6">
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="antibioticsPresent"
+              formControlName="antibioticsPresent"
+              placeholder="Present"
+            />
+            <label for="antibioticsPresent" class="label">Present</label>
+          </div>
+        </div>
+
+        <!-- Past -->
+        <div class="col-md-6">
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="antibioticsPast"
+              formControlName="antibioticsPast"
+              placeholder="Past"
+            />
+            <label for="antibioticsPast" class="label">Past</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Other Investigation -->
+      <div class="col-12">
+        <label for="previousResult" class="form-label label"
+          >Other Investigations</label
+        >
+        <div class="form-floating mb-3">
+          <textarea
+            class="form-control"
+            id="previousResult"
+            formControlName="previousResult"
+            placeholder="Enter Previous Results"
+            rows="3"
+          ></textarea>
+          <label for="previousResult" class="label"
+            >Previous culture result if any, with date</label
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Other Investigation -->
+      <div class="col-12">
+        <label for="otherInvestigation" class="form-label label"
+          >Other Investigations</label
+        >
+        <div class="form-floating mb-3">
+          <textarea
+            class="form-control"
+            id="otherInvestigation"
+            formControlName="otherInvestigations"
+            placeholder="Enter Other Investigation"
+            rows="3"
+          ></textarea>
+          <label for="otherInvestigation" class="label"
+            >Other Investigations</label
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="text-end">
+      <button type="button" class="btn btn-secondary me-2" (click)="onClose()">
+        Reset
+      </button>
+      <!-- <button type="submit" class="btn btn-primary">Save</button> -->
+      <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Save</span>
+        <span *ngIf="isLoading">
+          <i
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></i>
+          Saving...
+        </span>
+      </button>
+    </div>
+  </form>
+</div>

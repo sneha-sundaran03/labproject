@@ -1,0 +1,179 @@
+<div class="view-wrapper list-page">
+  <dx-data-grid
+    class="grid theme-dependent"
+    [dataSource]="dataSource"
+    [remoteOperations]="true"
+    [allowColumnReordering]="true"
+    [rowAlternationEnabled]="true"
+    [showBorders]="true"
+    [showRowLines]="true"
+    (onEditingStart)="onEditingStart($event)"
+    [width]="'100%'"
+    [height]="'auto'"
+    (onRowRemoving)="delete_Department_Data($event)"
+    (onExporting)="onExporting($event)"
+    id="dataGrid"
+    #dataGrid
+    style="margin-top: 30px"
+  >
+    <dxo-export
+      [enabled]="true"
+      [allowExportSelectedData]="true"
+      [formats]="['xlsx', 'pdf']"
+    >
+    </dxo-export>
+    <dxo-toolbar class="my-4" style="margin-bottom: 15px">
+      <dxi-item
+        location="before"
+        text="Department"
+        cssClass="font-bold text-lg"
+      ></dxi-item>
+      <dxi-item name="searchPanel" locateInMenu="auto"></dxi-item>
+      <dxi-item name="" locateInMenu="auto"></dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <dx-button
+          icon="plus"
+          type="default"
+          stylingMode="contained"
+          (onClick)="openPopup()"
+        ></dx-button>
+      </dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <dx-button
+          icon="refresh"
+          stylingMode="text"
+          (onClick)="refreshData()"
+        ></dx-button>
+      </dxi-item>
+      <dxi-item location="after" locateInMenu="auto">
+        <div class="separator"></div>
+      </dxi-item>
+      <dxi-item name="exportButton"></dxi-item>
+    </dxo-toolbar>
+
+    <dxo-search-panel
+      [visible]="true"
+      [highlightCaseSensitive]="true"
+    ></dxo-search-panel>
+    <dxi-column
+      dataField="DEPARTMENT"
+      alignment="left"
+      caption="Department"
+    ></dxi-column>
+    <dxi-column
+      dataField="IS_INACTIVE"
+      alignment="left"
+      caption="Status"
+      [calculateCellValue]="formatStatus"
+    ></dxi-column>
+
+    <dxo-header-filter [visible]="showHeaderFilter"></dxo-header-filter>
+
+    <dxo-editing
+      mode="popup"
+      [allowUpdating]="true"
+      [allowDeleting]="true"
+      [allowAdding]="true"
+      [useIcons]="true"
+    ></dxo-editing>
+
+    <dxo-paging [pageSize]="10"></dxo-paging>
+    <dxo-pager
+      [visible]="true"
+      [showPageSizeSelector]="true"
+      [allowedPageSizes]="[10, 25, 50, 100]"
+    ></dxo-pager>
+  </dx-data-grid>
+
+  <!-- =========== Add the Department================ -->
+  <dx-popup
+    [title]="'New Department'"
+    [(visible)]="isAddPop"
+    [width]="popupWidth"
+    [height]="300"
+  >
+    <form [formGroup]="formsource">
+      <div style="display: flex; align-items: center; gap: 20px">
+        <label >Department</label>
+        <input
+          type="text"
+          name="Department"
+          class="form-control"
+          formControlName="Department"
+          placeholder="Department Name"
+        />
+      </div>
+      
+      <label for="checboxadd" class="me-5" >Inactive </label>
+      <dx-check-box
+        class="mt-4"
+        formControlName="inActive"
+        [elementAttr]="{ 'aria-label': 'Unchecked' }"
+        id="checboxadd"
+      
+      ></dx-check-box>
+      <div class="d-flex justify-content-end mt-4">
+        <button
+          class="btn me-3 text-dark border border-1"
+          (click)="closePopup()"
+        >
+          Cancel
+        </button>
+        <dx-button
+          text="save"
+          class="me-2"
+          type="default"
+          stylingMode="contained"
+          (onClick)="addData()"
+        ></dx-button>
+      </div>
+    </form>
+  </dx-popup>
+
+  <!-- =========== Update the Department================ -->
+
+  <dx-popup
+    [title]="'Update Department'"
+    [(visible)]="isEditPop"
+    [width]="popupWidth"
+    [height]="300"
+    [closeOnOutsideClick]="true"
+  >
+    <dx-form [formData]="editDepartmentData" labelMode="outside">
+      <dxi-item
+        class="mt-4"
+        placeholder="Department Name"
+        dataField="DEPARTMENT"
+        editorType="dxTextBox"
+        [label]="{ text: 'Department Name',showColon: false  }"
+      
+      ></dxi-item>
+
+      <label for="checboxadd" class="me-5">Inactive </label>
+      <dxi-item
+        editorType="dxCheckBox"
+        dataField="IS_INACTIVE"
+        title="Inactive"
+        name="Inactive"
+        [label]="{text:'Inactive',showColon: false}"
+        
+      ></dxi-item>
+
+      <dxi-item class="d-flex justify-content-end mt-4 me-3">
+        <button
+          class="btn text-dark border border-1 me-3"
+          (click)="closePopup()"
+        >
+          Cancel
+        </button>
+        <dx-button
+          class="me-2"
+          text="Update"
+          type="default"
+          stylingMode="contained"
+          (onClick)="update_Department_Data()"
+        ></dx-button>
+      </dxi-item>
+    </dx-form>
+  </dx-popup>
+</div>

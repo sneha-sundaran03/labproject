@@ -1,0 +1,253 @@
+
+@import "./variables";
+
+// Import styles with default layout.
+@import "@coreui/coreui/scss/coreui";
+
+// Import Chart.js custom tooltips styles
+@import "@coreui/chartjs/scss/coreui-chartjs";
+
+// Custom styles for this theme
+@import "theme";
+
+// Some temp fixes
+//@import "fixes";
+
+// If you want to add custom CSS you can put it here.
+@import "custom";
+
+// Examples
+// We use those styles to show code examples, you should remove them in your application.
+@import "examples";
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+
+.dx-tabpanel .dx-tabpanel-tabs .dx-tabs {
+    height: 100%;
+    padding-bottom: 3px;
+    margin: 1px;
+  }
+  .dx-tabs-wrapper {
+    position: relative;
+    display: flex;
+    width: 100%;
+    // margin-bottom: 3px;
+    border: none;
+  }
+  .dx-tabpanel .dx-tabpanel-tab {
+    flex-basis: unset;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-left: 3px;
+  }
+  .dx-tabpanel .dx-tabpanel-tab {
+    flex-basis: unset;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 25px;
+    padding: 0px;
+    margin-bottom: 15px;
+  }
+  .dx-tab.dx-tab-selected {
+    color: rgb(24, 219, 14);
+  }
+  .dx-tabpanel .dx-tabpanel-tab .dx-tab.dx-tab-selected .dx-icon {
+    color: rgb(252, 254, 255);
+  }
+  .dx-datagrid
+    .dx-datagrid-content
+    .dx-datagrid-table
+    .dx-row
+    > td:not(.dx-validation-pending) {
+    vertical-align: middle;
+    padding: 7px;
+  }
+  
+  .dx-tabpanel .dx-tabpanel-tabs .dx-tabs {
+    height: 100%;
+  }
+
+
+  .dx-editor-filled.dx-texteditor-with-floating-label .dx-lookup-field, .dx-editor-filled.dx-texteditor-with-floating-label .dx-placeholder::before, .dx-editor-filled.dx-texteditor-with-floating-label .dx-texteditor-input, .dx-editor-filled.dx-texteditor-with-label:not(.dx-texteditor-label-outside) .dx-lookup-field, .dx-editor-filled.dx-texteditor-with-label:not(.dx-texteditor-label-outside) .dx-placeholder::before, .dx-editor-filled.dx-texteditor-with-label:not(.dx-texteditor-label-outside) .dx-texteditor-input {
+    padding-top: 13px;
+    padding-bottom: 2px;
+    color:var(--text-color);
+}
+
+
+// GRID
+
+#main-grid {
+  width: auto;
+  overflow-x: auto;
+}
+
+.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+  border-bottom: 1px solid rgb(97, 97, 97);
+  line-height: 40px;
+  font-weight: 1000;
+  font-size: 14px;
+}
+
+.dx-datagrid
+  .dx-datagrid-content
+  .dx-datagrid-table
+  .dx-row
+  > td:not(.dx-validation-pending):not(
+    .dx-datagrid-select-all
+  ).dx-editor-cell:not(.dx-command-select),
+.dx-datagrid
+  .dx-datagrid-content
+  .dx-datagrid-table
+  .dx-row
+  > td.dx-cell-modified:not(.dx-field-item-content):not(
+    .dx-validation-pending
+  ).dx-editor-cell:not(.dx-command-select),
+.dx-datagrid
+  .dx-datagrid-content
+  .dx-datagrid-table
+  .dx-row
+  > td.dx-datagrid-invalid:not(.dx-field-item-content):not(
+    .dx-validation-pending
+  ):not(.dx-datagrid-select-all).dx-editor-cell:not(.dx-command-select) {
+  padding: 0px;
+}
+
+.dx-datagrid
+  .dx-datagrid-content
+  .dx-datagrid-table
+  .dx-row
+  > td:not(.dx-validation-pending) {
+  vertical-align: middle;
+  padding: 7px;
+}
+.grid.theme-dependent {
+  .dx-toolbar {
+    // @include toolbar-panel();
+  }
+
+  .dx-datagrid-header-panel {
+    padding: 0;
+    // margin-top: 5px;
+  }
+}
+
+.view-wrapper.list-page {
+  margin-top: var(--content-padding);
+  // margin-top: 10px;
+
+  .dx-toolbar.dx-widget.theme-dependent,
+  .grid.theme-dependent .dx-toolbar {
+    margin-bottom: var(--content-padding);
+  }
+  .dx-toolbar.dx-widget.theme-dependent,
+  .grid.theme-dependent .mainDiv {
+    margin-bottom: 0px;
+    border-radius: 0;
+    transition: top 1.3s;
+  }
+}
+
+.dx-datagrid-headers.dx-datagrid-nowrap.dx-bordered-top-view {
+  border-radius: 8px 8px 0 0;
+  background-color: #00a0e020;
+  font-size: larger;
+  // font-weight: bolder;
+}
+
+.theme-dependent {
+  .dx-gridbase-container {
+    > .dx-bordered-bottom-view {
+      border-radius: 0 0 8px 8px;
+    }
+  }
+}
+
+.dx-datagrid-header-panel
+  .dx-toolbar-text-auto-hide
+  .dx-button.dx-button-has-icon {
+  border-radius: 4px;
+  background-color: #00a0e028;
+}
+.grid .dx-checkbox-checked.dx-state-readonly .dx-checkbox-icon {
+  color: #ffffff;
+  background-color: rgb(28, 142, 255);
+  border: 1px solid #00a1e0;
+}
+.grid .dx-checkbox.dx-state-readonly .dx-checkbox-icon {
+  border: 1px solid #00a1e0;
+}
+
+.grid .dx-button-mode-text {
+  background-color: #00a0e028;
+  color: #ffffff;
+  border-radius: 4px;
+}
+
+.reportGrid {
+  .dx-gridbase-container {
+    > .dx-bordered-bottom-view {
+      border-radius: 0 0 8px 8px;
+    }
+  }
+}
+
+.reportGridFooter .dx-datagrid > .dx-datagrid-total-footer {
+  display: none;
+  border: 2px solid var(--border-color);
+}
+.DetailsDrillDown .view-wrapper .grid .dx-datagrid-content .dx-row {
+  cursor: pointer;
+  height: 1rem;
+}
+.grid .dx-checkbox-icon {
+  width: 13px;
+  height: 13px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #a4afcb;
+  border-radius: 2px;
+  background-color: rgb(255, 255, 255);
+}
+
+.data-grid-container
+  .dx-datagrid-headers.dx-datagrid-nowrap.dx-bordered-top-view {
+  border-radius: 8px 8px 0 0;
+  background-color: #949630af;
+  font-size: larger;
+  // font-weight: bolder;
+}
+
+
+::ng-deep .dx-datagrid .dx-header-row .dx-column-header {
+  font-weight: normal !important; /* Removes bold text */
+}
+
+::ng-deep .dx-toolbar {
+  min-height: 40px !important;  /* Set toolbar height */
+  height: 40px !important;
+  display: flex;
+  align-items: center; /* Center the text */
+}
+
+::ng-deep .dx-toolbar .grid-title {
+  font-size: 14px; /* Adjust font size if needed */
+  line-height: 40px !important; /* Match toolbar height */
+}
+
+::ng-deep .dx-datagrid .dx-header-row {
+  min-height: 40px !important; /* Match toolbar height */
+  height: 40px !important;
+}
+
+::ng-deep .dx-datagrid .dx-header-row .dx-column-header {
+  min-height: 40px !important; /* Set column header height */
+  height: 40px !important;
+  display: flex;
+  align-items: center; /* Align text vertically */
+  justify-content: center; /* Center text horizontally */
+  font-weight: normal !important; /* Remove bold if needed */
+}
