@@ -62,7 +62,7 @@
     ></dxi-column>
     <dxi-column
       caption="Class Name"
-      dataField="CLASS_Name"
+      dataField="CLASS_NAME"
       alignment="left"
     ></dxi-column>
 
@@ -92,7 +92,7 @@
     <dx-form id="form" [formGroup]="formsource">
       <dxi-item itemType="group" cssClass="form-group" [colCount]="1">
         <dxi-item itemType="group" [colSpan]="3">
-          <dxi-item dataField="Antibiotic" [label]="{text:'Antibiotic',showColon: false}"></dxi-item>
+          <dxi-item dataField="Antibiotic" [label]="{text:'Antibiotic',showColon: false}"> <dx-text-box [(value)]="formsource.controls['Antibiotic'].value"></dx-text-box></dxi-item>
          <dxi-item [label]="{text:'Classification',showColon: false}">
            <dx-select-box
           [(value)]="classification.ID"
@@ -104,17 +104,16 @@
          
         ></dx-select-box>
          </dxi-item>
-            <dxi-item itemType="group" [colSpan]="3">
-            <dxi-item location="" dataField="display_Order" [label]="{text:'Display Order',showColon: false}" [colSpan]="2"></dxi-item>
-            <dxi-item
-            editorType="dxCheckBox"
-            dataField="IS_INACTIVE"
-            title="Inactive"
-            name="Inactive"
-            [label]="{text:'Inactive',showColon: false}"
-            [colSpan]="1"
-            
-          ></dxi-item>
+         <dxi-item dataField="display_order" [label]="{text:'Display Order',showColon: false}">  
+          <dx-number-box formControlName="display_order" ></dx-number-box></dxi-item>
+           
+          <dxi-item [label]="{text:'Inactive', showColon: false}">
+            <dx-check-box
+              class="mt-4"
+              formControlName="IS_INACTIVE"
+              [elementAttr]="{ 'aria-label': 'Unchecked' }"
+              id="checkboxadd"
+            ></dx-check-box>
           </dxi-item>
           
    
@@ -144,38 +143,54 @@
     [title]="'Update Antibiotics'"
     [(visible)]="isEditPop"
     [width]="400"
-    [height]="260"
+    [height]="370"
     [closeOnOutsideClick]="true"
   >
-    <dx-form id="form" [formData]="editAntibioticsData">
-      <dxi-item itemType="group" cssClass="form-group" [colCount]="1">
-        <dxi-item itemType="group" [colSpan]="3">
-          <dxi-item dataField="Antibiotic" [label]="{text:'Antibiotic',showColon: false}"></dxi-item>
-          <dxi-item
-            dataField="DESCRIPTION"
-            editorType="dxSelectBox"
-            [label]="{text:'Classification',showColon: false}"
-            [editorOptions]="{ items: DESCRIPTION, 
-              searchEnabled: true  }"
-           
-          ></dxi-item>
-
-          <dxi-item class="d-flex justify-content-end mt-4">
-            <button
-              class="btn text-dark border border-1 me-3"
-              (click)="closePopup()"
-            >
-              Cancel
-            </button>
-            <dx-button
-              class="me-2"
-              text="Save"
-              type="default"
-              stylingMode="contained"
-            ></dx-button>
-          </dxi-item>
+  <dx-form id="form" [formData]="editAntibioticsData">
+    <dxi-item itemType="group" cssClass="form-group" [colCount]="1">
+      <dxi-item itemType="group" [colSpan]="3">
+        <dxi-item dataField="ANTIBIOTIC" [label]="{text:'Antibiotic',showColon: false}"> <dx-text-box [(value)]="formsource.controls['Antibiotic'].value"></dx-text-box></dxi-item>
+       <dxi-item [label]="{text:'Classification',showColon: false}">
+         <dx-select-box
+        [(value)]="classification.ID"
+        [items]="classification"
+        displayExpr="DESCRIPTION"
+        valueExpr="ID"
+        style="flex: 1"
+        (onValueChanged)="onCLassificationSchemaChange($event)"
+       
+      ></dx-select-box>
+       </dxi-item>
+       <dxi-item dataField="display_order" [label]="{text:'Display Order',showColon: false}">  
+        <dx-number-box  ></dx-number-box></dxi-item>
+         
+        <dxi-item [label]="{text:'Inactive', showColon: false}">
+          <dx-check-box
+            class="mt-4"
+            formControlName="IS_INACTIVE"
+            [elementAttr]="{ 'aria-label': 'Unchecked' }"
+            id="checkboxadd"
+          ></dx-check-box>
+        </dxi-item>
+        
+ 
+        <dxi-item class="d-flex justify-content-end mt-4">
+          <button
+            class="btn text-dark border border-1 me-3"
+            (click)="closePopup()"
+          >
+            Cancel
+          </button>
+          <dx-button
+            class=""
+            text="Save"
+            type="default"
+            stylingMode="contained"
+            (onClick)="Add_Antibiotic_Details()"
+          ></dx-button>
         </dxi-item>
       </dxi-item>
-    </dx-form>
+    </dxi-item>
+  </dx-form>
   </dx-popup>
 </div>

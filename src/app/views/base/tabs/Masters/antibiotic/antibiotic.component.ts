@@ -7,11 +7,14 @@ import {
 } from "@angular/forms";
 import {
   DxButtonModule,
+  DxCheckBoxModule,
   DxDataGridComponent,
   DxDataGridModule,
   DxFormModule,
+  DxNumberBoxModule,
   DxPopupModule,
   DxSelectBoxModule,
+  DxTextBoxModule,
 } from "devextreme-angular";
 import { DataserviceService } from "../../../../../services/dataservice.service";
 
@@ -25,6 +28,9 @@ import { DataserviceService } from "../../../../../services/dataservice.service"
     DxButtonModule,
     ReactiveFormsModule,
     DxPopupModule,
+    DxTextBoxModule,
+    DxNumberBoxModule ,
+    DxCheckBoxModule
   ],
   templateUrl: "./antibiotic.component.html",
   styleUrl: "./antibiotic.component.scss",
@@ -39,8 +45,13 @@ export class AntibioticComponent {
   editAntibioticsData: any;
   dataSource: any 
 
-  classification_Id:any
-  classification_Name:any
+    classification_Details:any
+    Antibiotic: any;
+
+    classification: any;
+    DESCRIPTION: any;
+    class_id:any
+    class_name:any
 
   applyFilterTypes = [
     {
@@ -56,18 +67,14 @@ export class AntibioticComponent {
   currentFilter = this.applyFilterTypes[0].key;
   showHeaderFilter = true;
 
-  Antibiotic: any;
-
-  classification: any;
-  DESCRIPTION: any;
 
   constructor(private fb: FormBuilder ,private service:DataserviceService) {
     this.formsource = this.fb.group({
       Id: [null],
       Antibiotic: ["", [Validators.required]],
       classification: ["", [Validators.required]],
-      display_Order:['',[Validators.required]],
-      Status:[false,[Validators.required]]
+      display_order:['',[Validators.required]],
+      IS_INACTIVE: [false, [Validators.required]] 
     });
 
    this.get_Antibiotic_List()
@@ -86,10 +93,7 @@ export class AntibioticComponent {
       console.log(res);
       this.classification = res
       console.log(this.classification,"CLASSIFICATION")
-      this.classification_Name=res.DESCRIPTION
-
-      console.log(this.classification_Name);
-      
+ 
     })
   }
 
@@ -102,39 +106,91 @@ export class AntibioticComponent {
   this.isEditPop=false
   }
 
-  onEditingStart(e: any) {
-    e.cancel = true;
-    this.editAntibioticsData = e.data;
-    console.log(this.editAntibioticsData);
+  // onEditingStart(e: any) {
+  //   e.cancel = true;
+  //   this.editAntibioticsData = e.data;
+  //   console.log(this.editAntibioticsData);
 
-    this.isEditPop = true;
-  }
+  //   this.isEditPop = true;
+  // }
 
   //==========================Event for Change value of classification==========
-  onCLassificationSchemaChange(event:any){
 
-this.classification_Id=event.value
-console.log(event,"EVENT")
+  onEditingStart(e: any) {
+    e.cancel = true; // Prevents default editing behavior
+    this.editAntibioticsData = e.data; // Store the selected antibiotic details
+    console.log("Editing Data:", this.editAntibioticsData);
+  
+    // Ensure formsource is patched with the new data
+    this.formsource.patchValue({
+      Antibiotic: e.data.ANTIBIOTIC,
+      classification: {
+        ID: e.data.CLASS_ID,
+        DESCRIPTION: e.data.CLASS_NAME,
+      },
+      display_Order: e.data.DISPLAY_ORDER,
+      IS_INACTIVE: e.data.IS_INACTIVE,
+    });
+  
+    this.isEditPop = true; // Show the edit popup
   }
+  
+onCLassificationSchemaChange(event: any) {
+  console.log(event, "EVENT");
+
+  // Find the full classification object
+  const selectedClassification = this.classification.find(
+    (item: any) => item.ID === event.value
+  );
+
+  console.log(selectedClassification, "SELECTED CLASSIFICATION");
+
+  if (selectedClassification) {
+    this.classification_Details = selectedClassification;
+
+    // Correctly update form fields
+    this.formsource.patchValue({
+      classification: selectedClassification, // Store the full object in the form
+    });
+
+    console.log("Updated Form:", this.formsource.value);
+  }
+}
+
   // ==================================Add Antibiotic====================
-  Add_Antibiotic_Details(){
-    const Antibiotic = this.formsource.value.Antibiotic;
-    const CLASS_ID = this.formsource.value.classification_Id;
-    const CLASS_NAME = this.formsource.value.classification_Id;
-    const display_Order = this.formsource.value.display_Order;
-    const Status = this.formsource.value.Status;
 
+Add_Antibiotic_Details() {
+  const formValues = this.formsource.value;
+  const Antibiotic = formValues.Antibiotic;
+  const selectedClassification = formValues.classification; 
+  const classid = selectedClassification?.ID 
+  const classname = selectedClassification?.DESCRIPTION 
+  const display_order = formValues.display_order;
+  const isInactive = formValues.IS_INACTIVE; // Boolean
 
-
-  }
+  console.log("Final Data:", {
+    Antibiotic,
+    classid,
+    classname,
+    display_order,
+    isInactive 
+  });
+this.service.add_Antibiotic_Details(Antibiotic,classid,classname,display_order,isInactive).subscribe((res:any)=>{
+  console.log(res);
+   this.get_Antibiotic_List()
+}
+)// Now send this data to your API or perform further actions.
+}
 
 // ==========================update Antibiotic=============================
 
   update_Antibiotics_Data() {
-    const Antibiotics = this.editAntibioticsData.Antibiotic;
-    const classification = this.editAntibioticsData.classification;
-    const display_Order=this.editAntibioticsData.display_Order
-    console.log(Antibiotics, classification,display_Order);
+
+    const Antibiotic = this.editAntibioticsData.ANTIBIOTIC;
+    const classid = this.editAntibioticsData.CLASS_ID;
+    const classname = this.editAntibioticsData.CLASS_NAME;
+    const display_order = this.editAntibioticsData.DISPLAY_ORDER;
+    const isInactive = this.editAntibioticsData.IS_INACTIVE;
   }
 
   // ============================== Export file to Excel and PDG=========================

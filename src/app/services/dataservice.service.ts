@@ -164,7 +164,7 @@ select_investigation_Api(id:any){
 
 
 
-// =================================== List Antibiotic Details===============================
+// ===================================Api List Antibiotic Details===============================
 
 get_Antibiotic_Details(){
   const getEndPoint=this.apiUrl+`antibiotic/list`
@@ -173,17 +173,16 @@ get_Antibiotic_Details(){
 
 // ================================Api For Add Antibiotic Details=======================
 
-add_Antibiotic_Details(id:any,Antibiotic:any,CLASS_ID:any,CLASS_NAME:any,display_Order:any,isInactive:any,display_order:any){
+add_Antibiotic_Details(Antibiotic:any,classid:any,classname:any,display_order:any,isInactive:any){
 
   const getEndPoint=this.apiUrl+`antibiotic/insert`
 
   
   const reqbody = {
     
-    "ID":id,
     "ANTIBIOTIC": Antibiotic,
-    "CLASS_ID":CLASS_ID,
-    "CLASS_NAME":CLASS_NAME,
+    "CLASS_ID":classid,
+    "CLASS_NAME":classname,
     "IS_INACTIVE": isInactive,
     "DISPLAY_ORDER":display_order
   };
